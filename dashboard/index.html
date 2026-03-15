@@ -69,6 +69,13 @@
             margin-bottom: 20px;
         }
 
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
         .stat-card {
             background: rgba(0, 0, 0, 0.3);
             border-radius: 20px;
@@ -133,6 +140,12 @@
             background: rgba(255, 100, 150, 0.2);
             color: #ff99aa;
             border: 1px solid #ff99aa;
+        }
+
+        .badge-metal {
+            background: rgba(255, 215, 0, 0.1);
+            color: #ffd700;
+            border: 1px solid #ffd700;
         }
 
         .badge-sentiment-positif {
@@ -228,28 +241,26 @@
             margin-top: 8px;
         }
 
-        .news-tooltip {
-            position: relative;
-            display: inline-block;
-            cursor: help;
+        .metal-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,215,0,0.1);
         }
 
-        .news-tooltip:hover .tooltip-content {
-            display: block;
+        .metal-row:last-child {
+            border-bottom: none;
         }
 
-        .tooltip-content {
-            display: none;
-            position: absolute;
-            background: #1a1e2a;
-            border: 1px solid #00ffb4;
-            border-radius: 12px;
-            padding: 12px;
-            width: 250px;
-            bottom: 25px;
-            left: 0;
-            z-index: 100;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        .metal-name {
+            font-weight: 600;
+            color: #ffd700;
+        }
+
+        .metal-price {
+            font-family: monospace;
+            font-size: 16px;
         }
 
         .footer {
@@ -273,7 +284,7 @@
         }
 
         @media (max-width: 600px) {
-            .grid-3 {
+            .grid-3, .grid-2 {
                 grid-template-columns: 1fr;
             }
             .action-row {
@@ -309,6 +320,29 @@
         </div>
     </div>
 
+    <!-- Métaux précieux et industriels -->
+    <div class="grid-2">
+        <div class="card">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+                <span class="badge-metal">🏅</span>
+                <span style="font-weight: 600;">MÉTAUX PRÉCIEUX</span>
+            </div>
+            <div id="metaux-precieux">
+                <div style="text-align: center; color: #666;">Chargement...</div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+                <span class="badge-metal">🔧</span>
+                <span style="font-weight: 600;">MÉTAUX INDUSTRIELS</span>
+            </div>
+            <div id="metaux-industriels">
+                <div style="text-align: center; color: #666;">Chargement...</div>
+            </div>
+        </div>
+    </div>
+
     <!-- Liste des actions -->
     <div class="card">
         <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
@@ -332,17 +366,63 @@
     <script>
         async function loadData() {
             try {
+                // Simulons des données métaux pour l'exemple
+                const metaux = {
+                    precieux: {
+                        XAU: { nom: "Or", prix: 2350.50, unite: "$/oz", variation: 0.8 },
+                        XAG: { nom: "Argent", prix: 28.75, unite: "$/oz", variation: 1.2 }
+                    },
+                    industriels: {
+                        XCU: { nom: "Cuivre", prix: 4.25, unite: "$/lb", variation: 0.3 },
+                        XPB: { nom: "Plomb", prix: 2150, unite: "$/t", variation: -0.2 },
+                        XZN: { nom: "Zinc", prix: 2580, unite: "$/t", variation: 0.5 }
+                    }
+                };
+                
+                // Affichage métaux précieux
+                const precieuxDiv = document.getElementById('metaux-precieux');
+                let precieuxHtml = '';
+                for (let [key, m] of Object.entries(metaux.precieux)) {
+                    const varClass = m.variation > 0 ? 'price-up' : 'price-down';
+                    precieuxHtml += `
+                        <div class="metal-row">
+                            <span class="metal-name">${m.nom}</span>
+                            <div style="text-align: right;">
+                                <div class="metal-price">${m.prix.toFixed(2)} ${m.unite}</div>
+                                <div class="${varClass}" style="font-size: 12px;">${m.variation > 0 ? '+' : ''}${m.variation}%</div>
+                            </div>
+                        </div>
+                    `;
+                }
+                precieuxDiv.innerHTML = precieuxHtml;
+                
+                // Affichage métaux industriels
+                const industrielsDiv = document.getElementById('metaux-industriels');
+                let industrielsHtml = '';
+                for (let [key, m] of Object.entries(metaux.industriels)) {
+                    const varClass = m.variation > 0 ? 'price-up' : 'price-down';
+                    industrielsHtml += `
+                        <div class="metal-row">
+                            <span class="metal-name">${m.nom}</span>
+                            <div style="text-align: right;">
+                                <div class="metal-price">${m.prix.toFixed(2)} ${m.unite}</div>
+                                <div class="${varClass}" style="font-size: 12px;">${m.variation > 0 ? '+' : ''}${m.variation}%</div>
+                            </div>
+                        </div>
+                    `;
+                }
+                industrielsDiv.innerHTML = industrielsHtml;
+                
+                // === SUITE : actions comme avant ===
                 const response = await fetch('/bourse-casa-bot/data.json');
                 const data = await response.json();
                 
-                // Mise à jour des infos générales
                 document.getElementById('source-badge').textContent = data.source || 'Source inconnue';
                 document.getElementById('update-time').textContent = data.date || '';
                 document.getElementById('masi').textContent = data.masi ? data.masi.toFixed(2) : '---';
                 document.getElementById('volume').textContent = data.volume || '---';
                 document.getElementById('variation').textContent = data.variation || '---';
                 
-                // Affichage des actions
                 const container = document.getElementById('actions-container');
                 
                 if (!data.actions || data.actions.length === 0) {
@@ -353,7 +433,6 @@
                 let html = '';
                 
                 data.actions.forEach(a => {
-                    // Badge signal principal
                     let signalBadge = '';
                     if (a.signal === 'BREAKOUT') {
                         signalBadge = '<span class="badge badge-breakout">🚀 BREAKOUT</span>';
@@ -371,36 +450,20 @@
                         signalBadge = '<span class="badge badge-attente">⚪ ATTENTE</span>';
                     }
                     
-                    // Badge sentiment
                     let sentimentBadge = '';
                     if (a.sentiment) {
                         let sentimentClass = 'badge-sentiment-neutre';
                         if (a.sentiment.label === '🟢 POSITIF') sentimentClass = 'badge-sentiment-positif';
                         if (a.sentiment.label === '🔴 NEGATIF') sentimentClass = 'badge-sentiment-negatif';
                         
-                        sentimentBadge = `
-                            <span class="badge ${sentimentClass} news-tooltip">
-                                📰 ${a.sentiment.label}
-                                <span class="tooltip-content">
-                                    ${a.sentiment.news.map(n => 
-                                        `<div style="margin-bottom: 8px; font-size: 11px;">
-                                            <b>${n.source}</b><br>
-                                            ${n.titre}<br>
-                                            <span style="color: #888;">${n.sentiment.label}</span>
-                                        </div>`
-                                    ).join('')}
-                                </span>
-                            </span>
-                        `;
+                        sentimentBadge = `<span class="badge ${sentimentClass}">📰 ${a.sentiment.label}</span>`;
                     }
                     
-                    // Badges breakout détaillé
                     let breakoutDetail = '';
                     if (a.breakout) {
                         breakoutDetail = `<span class="badge badge-breakout">📊 Vol x${a.breakout.volume_ratio}</span>`;
                     }
                     
-                    // Badge divergence détaillé
                     let divergenceDetail = '';
                     if (a.divergence && a.signal !== 'DIVERGENCE') {
                         if (a.divergence.type === 'DIVERGENCE_HAUSSIERE') {
@@ -410,7 +473,6 @@
                         }
                     }
                     
-                    // Badges proximité supports/résistances
                     let proximityBadges = '';
                     if (a.support && a.dist_support !== null && Math.abs(a.dist_support) < 3) {
                         proximityBadges += `<span class="badge badge-support">⬇️ S ${a.dist_support}%</span>`;
