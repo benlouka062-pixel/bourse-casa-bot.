@@ -9,9 +9,20 @@ jobs:
   run-bot:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-      - run: pip install yfinance requests pandas
-      - run: python bot.py
+          
+      - name: Install dependencies
+        run: |
+          pip install yfinance requests pandas
+          
+      - name: Debug - list files
+        run: ls -la
+        
+      - name: Run bot
+        run: python bot.py
