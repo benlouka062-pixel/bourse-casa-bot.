@@ -1,0 +1,189 @@
+import feedparser
+import json
+import time
+import re
+from datetime import datetime
+
+class SentimentAnalyzer:
+    def __init__(self):
+        # === VRAIS FLUX RSS MAROCAINS ===
+        self.sources = [
+            {
+                "name": "Le Matin",
+                "url": "https://lematin.ma/rss.xml"  # Flux RSS officiel
+            },
+            {
+                "name": "Le 360",
+                "url": "https://le360.ma/rss.xml"    # Flux RSS officiel
+            },
+            {
+                "name": "Boursenews",
+                "url": "https://www.boursenews.ma/feed/"  # Flux RSS actif
+            },
+            {
+                "name": "Medias24",
+                "url": "https://medias24.com/feed/"   # Important pour l'économie
+            },
+            {
+                "name": "H24Info",
+                "url": "https://www.h24info.ma/feed/" # Actualités générales
+            }
+        ]
+    
+    def analyser_texte(self, texte):
+        """Analyse le sentiment d'un texte avec dictionnaire financier"""
+        
+        # Mots-clés financiers positifs
+        mots_positifs = [
+            'hausse', 'progrès', 'bénéfice', 'croissance', 'record', 'succès',
+            'augmentation', 'profit', 'gain', 'positif', 'reprise', 'amélioration',
+            'prosperité', 'rendement', 'dividende', 'performance', 'excédent'
+        ]
+        
+        # Mots-clés financiers négatifs
+        mots_negatifs = [
+            'baisse', 'perte', 'crise', 'chute', 'dette', 'problème', 'difficulté',
+            'diminution', 'déficit', 'négatif', 'ralentissement', 'dégradation',
+            'faillite', 'licenciement', 'restructuration', 'urgence'
+        ]
+        
+        texte_lower = texte.lower()
+        score = 0.5  # Neutre par défaut
+        
+        # Comptage des occurrences
+        for mot in mots_positifs:
+            if mot in texte_lower:
+                score += 0.1
+                # Bonus si plusieurs occurrences
+                score += 0.05 * texte_lower.count(mot)
+        
+        for mot in mots_negatifs:
+            if mot in texte_lower:
+                score -= 0.1
+                score -= 0.05 * texte_lower.count(mot)
+        
+        # Limiter entre 0 et 1
+        score = max(0.1, min(0.9, score))
+        
+        # Label
+        if score > 0.6:
+            label = "🟢 POSITIF"
+        elif score < 0.4:
+            label = "🔴 NEGATIF"
+        else:
+            label = "⚪ NEUTRE"
+        
+        return {
+            "score": round(score, 2),
+            "label": label
+        }
+    
+    def nettoyer_texte(self, texte):
+        """Nettoie le texte des caractères indésirables"""
+        texte = re.sub(r'<[^>]+>', '', texte)  # Enlever les tags HTML
+        texte = re.sub(r'\s+', ' ', texte)     # Normaliser les espaces
+        return texte.strip()
+    
+    def get_news_for_symbol(self, symbole, nom):
+        """Récupère les news pour un symbole donné"""
+        news_list = []
+        
+        print(f"\n🔍 Recherche de news pour {symbole} ({nom})...")
+        
+        for source in self.sources:
+            try:
+                print(f"  → {source['name']}...", end=" ")
+                feed = feedparser.parse(source["url"])
+                
+                if feed.bozo:  # Erreur de parsing
+                    print("❌ flux inaccessible")
+                    continue
+                
+                trouve = 0
+                for entry in feed.entries[:5]:  # 5 dernières news
+                    titre = self.nettoyer_texte(entry.title)
+                    resume = self.nettoyer_texte(entry.summary) if hasattr(entry, 'summary') else ''
+                    
+                    # Vérifier si la news parle du symbole ou du nom
+                    texte_recherche = titre + " " + resume
+                    texte_lower = texte_recherche.lower()
+                    
+                    if (symbole.lower() in texte_lower or 
+                        nom.lower() in texte_lower):
+                        
+                        sentiment = self.analyser_texte(texte_recherche)
+                        
+                        news_list.append({
+                            "source": source["name"],
+                            "titre": titre[:100] + "..." if len(titre) > 100 else titre,
+                            "sentiment": sentiment,
+                            "date": entry.published if hasattr(entry, 'published') else datetime.now().strftime("%Y-%m-%d %H:%M")
+                        })
+                        trouve += 1
+                
+                print(f"✅ {trouve} news")
+                
+            except Exception as e:
+                print(f"❌ erreur: {str(e)[:50]}")
+            
+            time.sleep(1)  # Politesse entre les sources
+        
+        return news_list
+    
+    def analyser_sentiment_global(self, symbole, nom):
+        """Analyse le sentiment global pour un symbole"""
+        news = self.get_news_for_symbol(symbole, nom)
+        
+        if not news:
+            return {
+                "symbole": symbole,
+                "score": 0.5,
+                "label": "⚪ NEUTRE (pas de news)",
+                "nombre_news": 0,
+                "news": []
+            }
+        
+        # Calcul du score moyen pondéré par la fraîcheur
+        scores = []
+        poids = []
+        
+        for i, n in enumerate(news):
+            scores.append(n["sentiment"]["score"])
+            # Les news récentes ont plus de poids (simulé ici)
+            poids.append(1.0 / (i + 1))
+        
+        score_moyen = sum(s * p for s, p in zip(scores, poids)) / sum(poids)
+        
+        if score_moyen > 0.55:
+            label = "🟢 POSITIF"
+        elif score_moyen < 0.45:
+            label = "🔴 NEGATIF"
+        else:
+            label = "⚪ NEUTRE"
+        
+        return {
+            "symbole": symbole,
+            "score": round(score_moyen, 2),
+            "label": label,
+            "nombre_news": len(news),
+            "news": news[:3]  # 3 dernières news
+        }
+
+# Test du module
+if __name__ == "__main__":
+    analyzer = SentimentAnalyzer()
+    
+    # Test avec IAM
+    result = analyzer.analyser_sentiment_global("IAM", "Maroc Telecom")
+    print("\n" + "="*60)
+    print("📊 ANALYSE DE SENTIMENT")
+    print("="*60)
+    print(f"Symbole: {result['symbole']}")
+    print(f"Sentiment: {result['label']} (score: {result['score']})")
+    print(f"News trouvées: {result['nombre_news']}")
+    
+    if result['news']:
+        print("\n📰 Dernières news:")
+        for n in result['news']:
+            print(f"  • {n['source']} - {n['titre']}")
+            print(f"    Sentiment: {n['sentiment']['label']}")
