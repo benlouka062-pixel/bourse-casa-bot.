@@ -1,6 +1,7 @@
 import yfinance as yf
 import json
 import time
+import os
 from datetime import datetime
 
 # === TES VRAIS TOKENS ===
@@ -29,8 +30,8 @@ NOMS = {
     "CIH": "CIH", "MNG": "MANAGEM", "SMI": "SMI", "CMT": "CMT"
 }
 
+# === FONCTIONS ===
 def calculer_rsi(prix_historique):
-    """Calcule le RSI à partir d'une liste de prix"""
     if len(prix_historique) < 15:
         return 50
     gains = 0
@@ -47,28 +48,19 @@ def calculer_rsi(prix_historique):
     return round(100 - (100 / (1 + rs)), 1)
 
 def get_price_and_rsi(sym, ticker):
-    """Récupère le prix et calcule le RSI"""
     try:
-        # Données historiques pour le RSI
         hist = yf.download(ticker, period="1mo", interval="1d", progress=False)
         if hist.empty:
-            return None, None
-        
-        # Dernier prix
+            return None
         prix = round(hist['Close'].iloc[-1], 2)
-        
-        # Calcul RSI
         prix_list = hist['Close'].tolist()
         rsi = calculer_rsi(prix_list)
-        
-        # Déterminer le signal
         if rsi < 30:
             signal = "ACHAT"
         elif rsi > 70:
             signal = "VENTE"
         else:
             signal = "ATTENTE"
-        
         return {
             "sym": sym,
             "nom": NOMS[sym],
@@ -76,12 +68,10 @@ def get_price_and_rsi(sym, ticker):
             "rsi": rsi,
             "signal": signal
         }
-    except Exception as e:
-        print(f"Erreur {sym}: {e}")
+    except:
         return None
 
 def get_masi():
-    """Récupère l'indice MASI"""
     try:
         masi = yf.download("^MASI", period="1d", progress=False)
         if not masi.empty:
@@ -90,32 +80,60 @@ def get_masi():
         pass
     return None
 
+def lire_ancien_cache():
+    """Lit l'ancien fichier data.json s'il existe"""
+    if os.path.exists("data.json"):
+        with open("data.json", "r") as f:
+            return json.load(f)
+    return None
+
 def main():
     print("🔍 Récupération des données réelles...")
     
+    # Lire l'ancien cache
+    ancien_cache = lire_ancien_cache()
+    anciennes_actions = {a['sym']: a for a in ancien_cache.get('actions', [])} if ancien_cache else {}
+    
     actions_data = []
+    source_globale = "📡 TEMPS RÉEL"
+    
     for sym, ticker in ACTIONS.items():
-        data = get_price_and_rsi(sym, ticker)
-        if data:
-            actions_data.append(data)
+        nouveau = get_price_and_rsi(sym, ticker)
+        if nouveau:
+            actions_data.append(nouveau)
+            print(f"✅ {sym}: nouveau prix récupéré")
+        else:
+            # Pas de nouveau prix → on garde l'ancien s'il existe
+            if sym in anciennes_actions:
+                ancien = anciennes_actions[sym]
+                ancien['source'] = "💾 CACHE"
+                actions_data.append(ancien)
+                print(f"💾 {sym}: ancien prix conservé")
+                source_globale = "💾 CACHE (hors séance)"
+            else:
+                print(f"❌ {sym}: aucune donnée")
         time.sleep(1)
     
     masi = get_masi()
+    if not masi and ancien_cache and ancien_cache.get('masi'):
+        masi = ancien_cache['masi']
     
     # Structure finale
     output = {
         "date": datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
+        "source": source_globale,
         "masi": masi,
-        "volume": "N/A",  # À améliorer plus tard
+        "volume": "N/A",
         "variation": "N/A",
         "actions": actions_data
     }
     
-    # Sauvegarde dans un fichier JSON
+    # Sauvegarde
     with open("data.json", "w") as f:
         json.dump(output, f, indent=2)
     
     print(f"✅ Fichier data.json généré avec {len(actions_data)} actions")
+    print(f"📦 Source: {source_globale}")
 
 if __name__ == "__main__":
     main()
