@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>TAOUSSI TRADER · Dashboard Réel</title>
+    <title>TAOUSSI TRADER · Dashboard Pro</title>
     <style>
         * {
             margin: 0;
@@ -42,6 +42,7 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 24px;
+            flex-wrap: wrap;
         }
 
         .title {
@@ -52,34 +53,53 @@
             -webkit-text-fill-color: transparent;
         }
 
-        .grid-2 {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
-            margin-bottom: 20px;
+        .source-badge {
+            background: rgba(0, 255, 180, 0.1);
+            color: #00ffb4;
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-size: 14px;
+            border: 1px solid rgba(0, 255, 180, 0.3);
         }
 
         .grid-3 {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 16px;
+            margin-bottom: 20px;
         }
 
-        .price-up {
-            color: #00ff9d;
-            font-weight: 700;
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
         }
 
-        .price-down {
-            color: #ff5e7c;
+        .stat-card {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .stat-label {
+            color: #888;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 26px;
             font-weight: 700;
+            margin-top: 8px;
         }
 
         .badge {
             display: inline-block;
-            padding: 4px 12px;
+            padding: 4px 10px;
             border-radius: 40px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
         }
 
@@ -101,28 +121,70 @@
             border: 1px solid #333;
         }
 
-        .indicator-box {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 16px;
-            padding: 12px;
-            text-align: center;
+        .badge-support {
+            background: rgba(0, 100, 255, 0.2);
+            color: #4da6ff;
+            border: 1px solid #4da6ff;
         }
 
-        .indicator-value {
-            font-size: 22px;
+        .badge-resistance {
+            background: rgba(255, 165, 0, 0.2);
+            color: #ffaa33;
+            border: 1px solid #ffaa33;
+        }
+
+        .action-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .action-row:last-child {
+            border-bottom: none;
+        }
+
+        .action-info {
+            flex: 2;
+        }
+
+        .action-symbol {
             font-weight: 700;
-            margin: 8px 0 4px;
+            font-size: 16px;
         }
 
-        .chart-container {
-            margin: 20px 0;
-            height: 200px;
-            background: rgba(0,0,0,0.3);
-            border-radius: 20px;
+        .action-name {
+            color: #888;
+            font-size: 12px;
+            margin-left: 8px;
+        }
+
+        .action-price {
+            font-weight: 700;
+            font-size: 18px;
+            text-align: right;
+        }
+
+        .action-details {
+            display: flex;
+            gap: 16px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .level-indicator {
             display: flex;
             align-items: center;
-            justify-content: center;
-            color: #666;
+            gap: 8px;
+            font-size: 13px;
+        }
+
+        .proximity-badge {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.05);
         }
 
         .footer {
@@ -136,15 +198,17 @@
             background: #00ffb4;
             color: #000;
             border: none;
-            padding: 10px 20px;
+            padding: 12px 24px;
             border-radius: 40px;
             font-weight: 600;
             cursor: pointer;
-            margin-top: 20px;
+            margin: 20px auto;
+            display: block;
+            font-size: 16px;
         }
 
         @media (max-width: 600px) {
-            .grid-2, .grid-3 {
+            .grid-3, .grid-2 {
                 grid-template-columns: 1fr;
             }
         }
@@ -152,334 +216,125 @@
 </head>
 <body>
     <div class="header">
-        <span class="title">📊 TAOUSSI TRADER · RÉEL</span>
-        <span class="badge badge-attente" id="market-status">⏳ Chargement...</span>
+        <span class="title">📊 TAOUSSI TRADER · PRO</span>
+        <span class="source-badge" id="source-badge">⏳ Chargement...</span>
     </div>
 
-    <!-- Stats rapides -->
-    <div class="grid-3" style="margin-bottom: 20px;">
-        <div class="card">
-            <div style="color: #888; font-size: 12px;">MASI</div>
-            <div style="font-size: 24px; font-weight: 700;" id="masi">---</div>
+    <!-- Stats marché -->
+    <div class="grid-3">
+        <div class="stat-card">
+            <div class="stat-label">MASI</div>
+            <div class="stat-value" id="masi">---</div>
         </div>
-        <div class="card">
-            <div style="color: #888; font-size: 12px;">Volume</div>
-            <div style="font-size: 20px; font-weight: 700;" id="volume">---</div>
+        <div class="stat-card">
+            <div class="stat-label">Volume</div>
+            <div class="stat-value" id="volume">---</div>
         </div>
-        <div class="card">
-            <div style="color: #888; font-size: 12px;">Variation</div>
-            <div style="font-size: 20px; font-weight: 700;" id="variation">---</div>
+        <div class="stat-card">
+            <div class="stat-label">Variation</div>
+            <div class="stat-value" id="variation">---</div>
         </div>
     </div>
 
-    <!-- Graphique placeholder (Chart.js sera ajouté ensuite) -->
-    <div class="chart-container" id="chart-placeholder">
-        📈 Graphique des prix (bientôt)
-    </div>
-
-    <!-- Liste des actions avec signaux -->
-    <div class="card" style="margin-top: 20px;">
+    <!-- Liste des actions -->
+    <div class="card">
         <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
-            <span style="font-weight: 600;">🔥 OPPORTUNITÉS RÉELLES</span>
+            <span style="font-weight: 600;">🔥 SUIVI ACTIONS</span>
             <span style="color: #00ffb4;" id="update-time"></span>
         </div>
-        <div id="actions-list">
-            <div style="text-align: center; padding: 20px; color: #666;">
-                Chargement des données réelles...
-            </div>
-        </div>
-    </div>
-
-    <!-- Bouton de rafraîchissement -->
-    <div style="text-align: center;">
-        <button class="refresh-btn" onclick="loadData()">⟳ Rafraîchir</button>
-    </div>
-
-    <!-- Pied de page -->
-    <div class="footer">
-        Mise à jour toutes les heures • Données réelles 24/7
-    </div>
-
-    <script>
-        function loadData() {
-            fetch('/bourse-casa-bot/data.json')
-                .then(response => response.json())
-                .then(data => {
-                    console.log("Données reçues:", data);
-                    
-                    // Mise à jour des stats
-                    document.getElementById('masi').textContent = data.masi ? data.masi.toFixed(2) : '---';
-                    document.getElementById('volume').textContent = data.volume || '---';
-                    document.getElementById('variation').textContent = data.variation || '---';
-                    document.getElementById('update-time').textContent = data.date || '';
-                    
-                    // Statut du marché
-                    const statusEl = document.getElementById('market-status');
-                    if (data.variation && data.variation.includes('-')) {
-                        statusEl.textContent = '🔴 Séance baissière';
-                        statusEl.className = 'badge badge-vente';
-                    } else if (data.variation && data.variation !== 'N/A') {
-                        statusEl.textContent = '🟢 Séance haussière';
-                        statusEl.className = 'badge badge-achat';
-                    } else {
-                        statusEl.textContent = '⏸️ Marché fermé';
-                        statusEl.className = 'badge badge-attente';
-                    }
-
-                    // Génération de la liste des actions
-                    const actionsList = document.getElementById('actions-list');
-                    if (!data.actions || data.actions.length === 0) {
-                        actionsList.innerHTML = '<div style="text-align: center; padding: 20px; color: #666;">Aucune donnée disponible</div>';
-                        return;
-                    }
-
-                    actionsList.innerHTML = data.actions.map(a => {
-                        let badgeClass = 'badge-attente';
-                        let badgeText = 'ATTENTE';
-                        if (a.signal === 'ACHAT') {
-                            badgeClass = 'badge-achat';
-                            badgeText = '🟢 ACHAT';
-                        } else if (a.signal === 'VENTE') {
-                            badgeClass = 'badge-vente';
-                            badgeText = '🔴 VENTE';
-                        }
-
-                        return `
-                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
-                                <div>
-                                    <span style="font-weight: 600;">${a.sym}</span>
-                                    <span style="color: #888; font-size: 12px; margin-left: 8px;">${a.nom}</span>
-                                </div>
-                                <div style="text-align: right;">
-                                    <div style="font-weight: 600;">${a.prix.toFixed(2)} DH</div>
-                                    <div style="display: flex; gap: 8px; margin-top: 4px; justify-content: flex-end;">
-                                        <span style="color: #888; font-size: 12px;">RSI: ${a.rsi}</span>
-                                        <span class="badge ${badgeClass}" style="font-size: 11px;">${badgeText}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                    }).join('');
-                })
-                .catch(error => {
-                    console.error('Erreur:', error);
-                    document.getElementById('actions-list').innerHTML = 
-                        '<div style="text-align: center; padding: 20px; color: #ff5e7c;">❌ Erreur de chargement des données</div>';
-                });
-        }
-
-        // Chargement initial
-        loadData();
-
-        // Rechargement automatique toutes les 5 minutes
-        setInterval(loadData, 300000);
-    </script>
-</body>
-</html>            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.8);
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-        }
-
-        .title {
-            font-size: 24px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #fff, #00ffb4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .grid-2 {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
-            margin-bottom: 20px;
-        }
-
-        .grid-3 {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-        }
-
-        .price-up {
-            color: #00ff9d;
-            font-weight: 700;
-        }
-
-        .price-down {
-            color: #ff5e7c;
-            font-weight: 700;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 40px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .badge-achat {
-            background: rgba(0, 255, 157, 0.2);
-            color: #00ff9d;
-            border: 1px solid #00ff9d;
-        }
-
-        .badge-vente {
-            background: rgba(255, 94, 124, 0.2);
-            color: #ff5e7c;
-            border: 1px solid #ff5e7c;
-        }
-
-        .badge-attente {
-            background: rgba(255, 255, 255, 0.1);
-            color: #aaa;
-            border: 1px solid #333;
-        }
-
-        .indicator-box {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 16px;
-            padding: 12px;
-            text-align: center;
-        }
-
-        .indicator-value {
-            font-size: 22px;
-            font-weight: 700;
-            margin: 8px 0 4px;
-        }
-
-        .chart-container {
-            margin: 20px 0;
-            height: 200px;
-            background: rgba(0,0,0,0.3);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #666;
-        }
-
-        .footer {
-            margin-top: 30px;
-            text-align: center;
-            color: #666;
-            font-size: 12px;
-        }
-
-        @media (max-width: 600px) {
-            .grid-2, .grid-3 {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="header">
-        <span class="title">📊 TAOUSSI TRADER</span>
-        <span class="badge badge-attente" id="market-status">⏳ Chargement...</span>
-    </div>
-
-    <!-- Stats rapides -->
-    <div class="grid-3" style="margin-bottom: 20px;">
-        <div class="card">
-            <div style="color: #888; font-size: 12px;">MASI</div>
-            <div style="font-size: 24px; font-weight: 700;" id="masi">---</div>
-        </div>
-        <div class="card">
-            <div style="color: #888; font-size: 12px;">Volume</div>
-            <div style="font-size: 20px; font-weight: 700;" id="volume">---</div>
-        </div>
-        <div class="card">
-            <div style="color: #888; font-size: 12px;">Variation</div>
-            <div style="font-size: 20px; font-weight: 700;" id="variation">---</div>
-        </div>
-    </div>
-
-    <!-- Graphique placeholder (Chart.js sera ajouté ensuite) -->
-    <div class="chart-container" id="chart-placeholder">
-        📈 Graphique des prix (Chart.js)
-    </div>
-
-    <!-- Liste des actions avec signaux -->
-    <div class="card" style="margin-top: 20px;">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
-            <span style="font-weight: 600;">🔥 OPPORTUNITÉS</span>
-            <span style="color: #00ffb4;">{{date}}</span>
-        </div>
-        <div id="actions-list">
-            <!-- Les actions seront injectées ici par JavaScript -->
-            <div style="text-align: center; padding: 20px; color: #666;">
+        <div id="actions-container">
+            <div style="text-align: center; padding: 40px; color: #666;">
                 Chargement des données...
             </div>
         </div>
     </div>
 
-    <!-- Pied de page -->
+    <!-- Bouton rafraîchir -->
+    <button class="refresh-btn" onclick="loadData()">⟳ RAFRAÎCHIR</button>
+
     <div class="footer">
-        Mise à jour toutes les heures • Données réelles 24/7
+        Mise à jour automatique toutes les 5 min • Données réelles 24/7
     </div>
 
     <script>
-        // Données simulées pour le moment (remplacées par les vraies données plus tard)
-        const mockData = {
-            "masi": 16855.82,
-            "volume": "925M",
-            "variation": "-1.76%",
-            "date": new Date().toLocaleString('fr-MA'),
-            "actions": [
-                {"sym": "ADH", "nom": "ADDOHA", "prix": 25.50, "rsi": 31, "signal": "ACHAT"},
-                {"sym": "IAM", "nom": "ITISSALAT", "prix": 142.80, "rsi": 68, "signal": "VENTE"},
-                {"sym": "ATW", "nom": "ATTIJARI", "prix": 452.00, "rsi": 45, "signal": "ATTENTE"},
-                {"sym": "BCP", "nom": "BCP", "prix": 281.00, "rsi": 52, "signal": "ATTENTE"},
-                {"sym": "CIH", "nom": "CIH", "prix": 324.00, "rsi": 49, "signal": "ATTENTE"},
-                {"sym": "MNG", "nom": "MANAGEM", "prix": 1985.00, "rsi": 72, "signal": "VENTE"},
-                {"sym": "AGZ", "nom": "AFRIQUIA", "prix": 2180.00, "rsi": 28, "signal": "ACHAT"},
-                {"sym": "TQM", "nom": "TAQA", "prix": 795.00, "rsi": 44, "signal": "ATTENTE"}
-            ]
-        };
-
-        // Mise à jour de l'affichage
-        document.getElementById('masi').textContent = mockData.masi.toFixed(2);
-        document.getElementById('volume').textContent = mockData.volume;
-        document.getElementById('variation').textContent = mockData.variation;
-        document.getElementById('market-status').textContent = mockData.variation.includes('-') ? '🔴 Séance baissière' : '🟢 Séance haussière';
-
-        // Génération de la liste des actions
-        const actionsList = document.getElementById('actions-list');
-        actionsList.innerHTML = mockData.actions.map(a => {
-            let badgeClass = 'badge-attente';
-            let badgeText = 'ATTENTE';
-            if (a.signal === 'ACHAT') {
-                badgeClass = 'badge-achat';
-                badgeText = '🟢 ACHAT';
-            } else if (a.signal === 'VENTE') {
-                badgeClass = 'badge-vente';
-                badgeText = '🔴 VENTE';
-            }
-
-            return `
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
-                    <div>
-                        <span style="font-weight: 600;">${a.sym}</span>
-                        <span style="color: #888; font-size: 12px; margin-left: 8px;">${a.nom}</span>
-                    </div>
-                    <div style="text-align: right;">
-                        <div style="font-weight: 600;">${a.prix.toFixed(2)} DH</div>
-                        <div style="display: flex; gap: 8px; margin-top: 4px;">
-                            <span style="color: #888; font-size: 12px;">RSI: ${a.rsi}</span>
-                            <span class="badge ${badgeClass}" style="font-size: 11px;">${badgeText}</span>
+        async function loadData() {
+            try {
+                const response = await fetch('/bourse-casa-bot/data.json');
+                const data = await response.json();
+                
+                // Mise à jour des infos générales
+                document.getElementById('source-badge').textContent = data.source || 'Source inconnue';
+                document.getElementById('update-time').textContent = data.date || '';
+                document.getElementById('masi').textContent = data.masi ? data.masi.toFixed(2) : '---';
+                document.getElementById('volume').textContent = data.volume || '---';
+                document.getElementById('variation').textContent = data.variation || '---';
+                
+                // Affichage des actions
+                const container = document.getElementById('actions-container');
+                
+                if (!data.actions || data.actions.length === 0) {
+                    container.innerHTML = '<div style="text-align: center; padding: 40px; color: #666;">Aucune donnée disponible</div>';
+                    return;
+                }
+                
+                let html = '';
+                
+                data.actions.forEach(a => {
+                    // Badge signal
+                    let signalBadge = '';
+                    if (a.signal === 'ACHAT') signalBadge = '<span class="badge badge-achat">🟢 ACHAT</span>';
+                    else if (a.signal === 'VENTE') signalBadge = '<span class="badge badge-vente">🔴 VENTE</span>';
+                    else signalBadge = '<span class="badge badge-attente">⚪ ATTENTE</span>';
+                    
+                    // Badges proximité supports/résistances
+                    let proximityHtml = '';
+                    if (a.support && a.dist_support !== null && Math.abs(a.dist_support) < 3) {
+                        proximityHtml += `<span class="badge badge-support">⬇️ Support à ${a.dist_support}%</span>`;
+                    }
+                    if (a.resistance && a.dist_resistance !== null && Math.abs(a.dist_resistance) < 3) {
+                        proximityHtml += `<span class="badge badge-resistance">⬆️ Résistance à ${a.dist_resistance}%</span>`;
+                    }
+                    
+                    html += `
+                        <div class="action-row">
+                            <div class="action-info">
+                                <div>
+                                    <span class="action-symbol">${a.sym}</span>
+                                    <span class="action-name">${a.nom || ''}</span>
+                                </div>
+                                <div class="action-details">
+                                    <div class="level-indicator">
+                                        <span>📊 RSI: ${a.rsi || '--'}</span>
+                                    </div>
+                                    ${a.support ? `<div class="level-indicator"><span>🛡️ S: ${a.support}</span></div>` : ''}
+                                    ${a.resistance ? `<div class="level-indicator"><span>🧱 R: ${a.resistance}</span></div>` : ''}
+                                    <div class="proximity-badge">${signalBadge}</div>
+                                </div>
+                                <div style="margin-top: 8px; display: flex; gap: 8px;">
+                                    ${proximityHtml}
+                                </div>
+                            </div>
+                            <div class="action-price">
+                                ${a.prix ? a.prix.toFixed(2) + ' DH' : '--'}
+                            </div>
                         </div>
-                    </div>
-                </div>
-            `;
-        }).join('');
+                    `;
+                });
+                
+                container.innerHTML = html;
+                
+            } catch (error) {
+                console.error('Erreur:', error);
+                document.getElementById('actions-container').innerHTML = 
+                    '<div style="text-align: center; padding: 40px; color: #ff5e7c;">❌ Erreur de chargement</div>';
+            }
+        }
+
+        // Chargement initial
+        loadData();
+        
+        // Rechargement auto toutes les 5 minutes
+        setInterval(loadData, 300000);
     </script>
 </body>
 </html>
