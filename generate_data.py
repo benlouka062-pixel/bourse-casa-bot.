@@ -50,14 +50,9 @@ def distance_vers_niveau(prix, niveau):
         return None
     return round(((prix - niveau) / niveau) * 100, 1)
 
-# === NOUVELLE FONCTION : DÉTECTION BREAKOUT ===
 def detecter_breakout(prix_actuel, resistance, volume_actuel, volume_moyen, seuil_volume=1.5):
-    """
-    Détecte un breakout haussier (cassure de résistance avec volume)
-    """
     if not prix_actuel or not resistance or not volume_actuel or not volume_moyen:
         return None
-    
     if prix_actuel > resistance and volume_actuel > volume_moyen * seuil_volume:
         return {
             "type": "BREAKOUT_HAUSSIER",
@@ -68,7 +63,6 @@ def detecter_breakout(prix_actuel, resistance, volume_actuel, volume_moyen, seui
     return None
 
 def get_volume_data(ticker):
-    """Récupère le volume récent pour calculer la moyenne"""
     try:
         data = yf.download(ticker, period="5d", interval="1d", progress=False)
         if len(data) >= 5:
@@ -80,32 +74,79 @@ def get_volume_data(ticker):
         pass
     return None, None
 
+# === NOUVELLE FONCTION : DÉTECTION DIVERGENCES RSI ===
+def detecter_divergence(prix_historique, rsi_historique, periode=14):
+    """
+    Détecte les divergences entre prix et RSI
+    """
+    if len(prix_historique) < periode * 2 or len(rsi_historique) < periode * 2:
+        return None
+    
+    # Derniers points
+    prix_recents = prix_historique[-periode:]
+    rsi_recents = rsi_historique[-periode:]
+    
+    # Période précédente
+    prix_prec = prix_historique[-periode*2:-periode]
+    rsi_prec = rsi_historique[-periode*2:-periode]
+    
+    # Divergence haussière (prix plus bas, RSI plus haut)
+    if min(prix_recents) < min(prix_prec) and min(rsi_recents) > min(rsi_prec):
+        return {
+            "type": "DIVERGENCE_HAUSSIERE",
+            "message": "📈 Prix plus bas, RSI plus haut → retournement haussier possible"
+        }
+    
+    # Divergence baissière (prix plus haut, RSI plus bas)
+    if max(prix_recents) > max(prix_prec) and max(rsi_recents) < max(rsi_prec):
+        return {
+            "type": "DIVERGENCE_BAISSIERE",
+            "message": "📉 Prix plus haut, RSI plus bas → retournement baissier possible"
+        }
+    
+    return None
+
+def calculer_rsi_historique(prix_historique):
+    """Calcule le RSI pour toute la série historique"""
+    rsi_historique = []
+    for i in range(len(prix_historique)):
+        if i < 14:
+            rsi_historique.append(50)
+        else:
+            rsi_historique.append(calculer_rsi(prix_historique[:i+1]))
+    return rsi_historique
+
 def get_price_and_rsi(sym, ticker):
     try:
-        hist = yf.download(ticker, period="1mo", interval="1d", progress=False)
+        hist = yf.download(ticker, period="2mo", interval="1d", progress=False)
         if hist.empty:
             return None
         
         prix = round(hist['Close'].iloc[-1], 2)
         prix_list = hist['Close'].tolist()
-        rsi = calculer_rsi(prix_list)
+        
+        # Calcul RSI pour toute la série
+        rsi_historique = calculer_rsi_historique(prix_list)
+        rsi_actuel = rsi_historique[-1]
         
         support, resistance = calculer_support_resistance(prix_list)
         dist_support = distance_vers_niveau(prix, support)
         dist_resistance = distance_vers_niveau(prix, resistance)
         
-        # Récupération des volumes
         volume_actuel, volume_moyen = get_volume_data(ticker)
-        
-        # Détection breakout
         breakout = detecter_breakout(prix, resistance, volume_actuel, volume_moyen)
         
-        # Signal
+        # === NOUVEAU : détection divergence ===
+        divergence = detecter_divergence(prix_list, rsi_historique)
+        
+        # Signal (priorité aux breakouts, puis divergences, puis RSI)
         if breakout:
             signal = "BREAKOUT"
-        elif rsi < 30:
+        elif divergence:
+            signal = "DIVERGENCE"
+        elif rsi_actuel < 30:
             signal = "ACHAT"
-        elif rsi > 70:
+        elif rsi_actuel > 70:
             signal = "VENTE"
         else:
             signal = "ATTENTE"
@@ -114,7 +155,7 @@ def get_price_and_rsi(sym, ticker):
             "sym": sym,
             "nom": NOMS[sym],
             "prix": prix,
-            "rsi": rsi,
+            "rsi": rsi_actuel,
             "signal": signal,
             "support": support,
             "resistance": resistance,
@@ -124,6 +165,9 @@ def get_price_and_rsi(sym, ticker):
         
         if breakout:
             result["breakout"] = breakout
+        
+        if divergence:
+            result["divergence"] = divergence
         
         return result
     except Exception as e:
@@ -159,7 +203,9 @@ def main():
         if nouveau:
             actions_data.append(nouveau)
             if nouveau.get('breakout'):
-                print(f"🚀 {sym}: BREAKOUT détecté ! (volume x{nouveau['breakout']['volume_ratio']})")
+                print(f"🚀 {sym}: BREAKOUT détecté !")
+            elif nouveau.get('divergence'):
+                print(f"📊 {sym}: {nouveau['divergence']['message']}")
             else:
                 print(f"✅ {sym}: nouveau prix récupéré")
         else:
