@@ -10,18 +10,9 @@ CHAT_ID = "8150604747"
 
 # Actions à suivre
 ACTIONS = {
-    "ADH": "ADH.MS",
-    "DHO": "DHO.MS",
-    "ENL": "ENL.MS",
-    "IAM": "IAM.MS",
-    "AGZ": "AGZ.MS",
-    "TQM": "TQM.MS",
-    "ATW": "ATW.MS",
-    "BCP": "BCP.MS",
-    "CIH": "CIH.MS",
-    "MNG": "MNG.MS",
-    "SMI": "SMI.MS",
-    "CMT": "CMT.MS"
+    "ADH": "ADH.MS", "DHO": "DHO.MS", "ENL": "ENL.MS", "IAM": "IAM.MS",
+    "AGZ": "AGZ.MS", "TQM": "TQM.MS", "ATW": "ATW.MS", "BCP": "BCP.MS",
+    "CIH": "CIH.MS", "MNG": "MNG.MS", "SMI": "SMI.MS", "CMT": "CMT.MS"
 }
 
 NOMS = {
@@ -85,14 +76,14 @@ def lire_ancien_cache():
     if os.path.exists("data.json"):
         with open("data.json", "r") as f:
             return json.load(f)
-    return None
+    return {"actions": []}  # Retourne une structure vide par défaut
 
 def main():
-    print("🔍 Récupération des données réelles...")
+    print("🔍 Récupération des données...")
     
     # Lire l'ancien cache
     ancien_cache = lire_ancien_cache()
-    anciennes_actions = {a['sym']: a for a in ancien_cache.get('actions', [])} if ancien_cache else {}
+    anciennes_actions = {a['sym']: a for a in ancien_cache.get('actions', [])}
     
     actions_data = []
     source_globale = "📡 TEMPS RÉEL"
@@ -100,22 +91,23 @@ def main():
     for sym, ticker in ACTIONS.items():
         nouveau = get_price_and_rsi(sym, ticker)
         if nouveau:
+            # ✅ Nouveau prix récupéré
             actions_data.append(nouveau)
             print(f"✅ {sym}: nouveau prix récupéré")
         else:
-            # Pas de nouveau prix → on garde l'ancien s'il existe
+            # ❌ Pas de nouveau prix → on garde l'ancien s'il existe
             if sym in anciennes_actions:
-                ancien = anciennes_actions[sym]
+                ancien = anciennes_actions[sym].copy()
                 ancien['source'] = "💾 CACHE"
                 actions_data.append(ancien)
-                print(f"💾 {sym}: ancien prix conservé")
+                print(f"💾 {sym}: ancien prix conservé ({ancien.get('prix', '?')} DH)")
                 source_globale = "💾 CACHE (hors séance)"
             else:
-                print(f"❌ {sym}: aucune donnée")
+                print(f"❌ {sym}: aucune donnée (neuf ni cache)")
         time.sleep(1)
     
     masi = get_masi()
-    if not masi and ancien_cache and ancien_cache.get('masi'):
+    if not masi and ancien_cache.get('masi'):
         masi = ancien_cache['masi']
     
     # Structure finale
