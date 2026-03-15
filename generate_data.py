@@ -23,7 +23,6 @@ NOMS = {
 
 # === FONCTIONS EXISTANTES ===
 def calculer_rsi(prix_historique):
-    """Calcule le RSI à partir d'une liste de prix"""
     if len(prix_historique) < 15:
         return 50
     gains = 0
@@ -39,29 +38,49 @@ def calculer_rsi(prix_historique):
     rs = gains / pertes
     return round(100 - (100 / (1 + rs)), 1)
 
-# === NOUVELLES FONCTIONS POUR SUPPORTS/RÉSISTANCES ===
 def calculer_support_resistance(prix_historique, periode=20):
-    """
-    Calcule les niveaux de support et résistance dynamiques
-    Support = plus bas sur la période
-    Résistance = plus haut sur la période
-    """
     if len(prix_historique) < periode:
         return None, None
-    
     support = min(prix_historique[-periode:])
     resistance = max(prix_historique[-periode:])
-    
     return round(support, 2), round(resistance, 2)
 
 def distance_vers_niveau(prix, niveau):
-    """Calcule la distance en pourcentage par rapport à un niveau"""
     if not prix or not niveau:
         return None
     return round(((prix - niveau) / niveau) * 100, 1)
 
+# === NOUVELLE FONCTION : DÉTECTION BREAKOUT ===
+def detecter_breakout(prix_actuel, resistance, volume_actuel, volume_moyen, seuil_volume=1.5):
+    """
+    Détecte un breakout haussier (cassure de résistance avec volume)
+    """
+    if not prix_actuel or not resistance or not volume_actuel or not volume_moyen:
+        return None
+    
+    if prix_actuel > resistance and volume_actuel > volume_moyen * seuil_volume:
+        return {
+            "type": "BREAKOUT_HAUSSIER",
+            "prix": prix_actuel,
+            "niveau": resistance,
+            "volume_ratio": round(volume_actuel / volume_moyen, 2)
+        }
+    return None
+
+def get_volume_data(ticker):
+    """Récupère le volume récent pour calculer la moyenne"""
+    try:
+        data = yf.download(ticker, period="5d", interval="1d", progress=False)
+        if len(data) >= 5:
+            volumes = data['Volume'].tolist()
+            volume_actuel = volumes[-1]
+            volume_moyen = sum(volumes[-5:-1]) / 4 if len(volumes) > 1 else volume_actuel
+            return volume_actuel, volume_moyen
+    except:
+        pass
+    return None, None
+
 def get_price_and_rsi(sym, ticker):
-    """Récupère le prix, calcule RSI ET support/résistance"""
     try:
         hist = yf.download(ticker, period="1mo", interval="1d", progress=False)
         if hist.empty:
@@ -71,37 +90,47 @@ def get_price_and_rsi(sym, ticker):
         prix_list = hist['Close'].tolist()
         rsi = calculer_rsi(prix_list)
         
-        # === NOUVEAU : calcul support/résistance ===
         support, resistance = calculer_support_resistance(prix_list)
         dist_support = distance_vers_niveau(prix, support)
         dist_resistance = distance_vers_niveau(prix, resistance)
         
+        # Récupération des volumes
+        volume_actuel, volume_moyen = get_volume_data(ticker)
+        
+        # Détection breakout
+        breakout = detecter_breakout(prix, resistance, volume_actuel, volume_moyen)
+        
         # Signal
-        if rsi < 30:
+        if breakout:
+            signal = "BREAKOUT"
+        elif rsi < 30:
             signal = "ACHAT"
         elif rsi > 70:
             signal = "VENTE"
         else:
             signal = "ATTENTE"
         
-        return {
+        result = {
             "sym": sym,
             "nom": NOMS[sym],
             "prix": prix,
             "rsi": rsi,
             "signal": signal,
-            # === NOUVEAU ===
             "support": support,
             "resistance": resistance,
             "dist_support": dist_support,
             "dist_resistance": dist_resistance
         }
+        
+        if breakout:
+            result["breakout"] = breakout
+        
+        return result
     except Exception as e:
         print(f"Erreur {sym}: {e}")
         return None
 
 def get_masi():
-    """Récupère l'indice MASI"""
     try:
         masi = yf.download("^MASI", period="1d", progress=False)
         if not masi.empty:
@@ -111,7 +140,6 @@ def get_masi():
     return None
 
 def lire_ancien_cache():
-    """Lit l'ancien fichier data.json s'il existe"""
     if os.path.exists("data.json"):
         with open("data.json", "r") as f:
             return json.load(f)
@@ -120,7 +148,6 @@ def lire_ancien_cache():
 def main():
     print("🔍 Récupération des données...")
     
-    # Lire l'ancien cache
     ancien_cache = lire_ancien_cache()
     anciennes_actions = {a['sym']: a for a in ancien_cache.get('actions', [])}
     
@@ -131,9 +158,11 @@ def main():
         nouveau = get_price_and_rsi(sym, ticker)
         if nouveau:
             actions_data.append(nouveau)
-            print(f"✅ {sym}: nouveau prix récupéré (support: {nouveau['support']}, résistance: {nouveau['resistance']})")
+            if nouveau.get('breakout'):
+                print(f"🚀 {sym}: BREAKOUT détecté ! (volume x{nouveau['breakout']['volume_ratio']})")
+            else:
+                print(f"✅ {sym}: nouveau prix récupéré")
         else:
-            # Pas de nouveau prix → on garde l'ancien s'il existe
             if sym in anciennes_actions:
                 ancien = anciennes_actions[sym].copy()
                 ancien['source'] = "💾 CACHE"
@@ -141,14 +170,13 @@ def main():
                 print(f"💾 {sym}: ancien prix conservé ({ancien.get('prix', '?')} DH)")
                 source_globale = "💾 CACHE (hors séance)"
             else:
-                print(f"❌ {sym}: aucune donnée (neuf ni cache)")
+                print(f"❌ {sym}: aucune donnée")
         time.sleep(1)
     
     masi = get_masi()
     if not masi and ancien_cache.get('masi'):
         masi = ancien_cache['masi']
     
-    # Structure finale
     output = {
         "date": datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
         "source": source_globale,
@@ -158,7 +186,6 @@ def main():
         "actions": actions_data
     }
     
-    # Sauvegarde
     with open("data.json", "w") as f:
         json.dump(output, f, indent=2)
     
