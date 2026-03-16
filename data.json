@@ -1,8 +1,160 @@
 {
-  "date": "15/03/2026 23:00:34",
-  "source": "\ud83d\udce1 TEMPS R\u00c9EL",
+  "date": "16/03/2026 01:04:44",
+  "source": "\ud83d\udce1 SYST\u00c8ME HYBRIDE (r\u00e9el + fallback temporaire)",
   "masi": null,
   "volume": "N/A",
   "variation": "N/A",
-  "actions": []
+  "actions": [
+    {
+      "sym": "ADH",
+      "nom": "ADDOHA",
+      "prix": 25.5,
+      "rsi": 50,
+      "signal": "ATTENTE",
+      "support": 24.73,
+      "resistance": 26.27,
+      "source": "D\u00c9FAUT (temporaire)"
+    },
+    {
+      "sym": "DHO",
+      "nom": "DELTA HOLDING",
+      "prix": 148.3,
+      "rsi": 50,
+      "signal": "ATTENTE",
+      "support": 143.85,
+      "resistance": 152.75,
+      "source": "D\u00c9FAUT (temporaire)"
+    },
+    {
+      "sym": "ENL",
+      "nom": "ENNAKL",
+      "prix": 176.2,
+      "rsi": 50,
+      "signal": "ATTENTE",
+      "support": 170.91,
+      "resistance": 181.49,
+      "source": "D\u00c9FAUT (temporaire)"
+    },
+    {
+      "sym": "IAM",
+      "nom": "ITISSALAT",
+      "prix": 142.8,
+      "rsi": 50,
+      "signal": "ATTENTE",
+      "support": 138.52,
+      "resistance": 147.08,
+      "source": "D\u00c9FAUT (temporaire)"
+    },
+    {
+      "sym": "AGZ",
+      "nom": "AFRIQUIA GAZ",
+      "prix": 2180.0,
+      "rsi": 50,
+      "signal": "ATTENTE",
+      "support": 2114.6,
+      "resistance": 2245.4,
+      "source": "D\u00c9FAUT (temporaire)"
+    },
+    {
+      "sym": "TQM",
+      "nom": "TAQA MOROCCO",
+      "prix": 795.0,
+      "rsi": 50,
+      "signal": "ATTENTE",
+      "support": 771.15,
+      "resistance": 818.85,
+      "source": "D\u00c9FAUT (temporaire)"
+    },
+    {
+      "sym": "ATW",
+      "nom": "ATTIJARI",
+      "prix": 452.0,
+      "rsi": 50,
+      "signal": "ATTENTE",
+      "support": 438.44,
+      "resistance": 465.56,
+      "source": "D\u00c9FAUT (temporaire)"
+    },
+    {
+      "sym": "BCP",
+      "nom": "BCP",
+      "prix": 281.0,
+      "rsi": 50,
+      "signal": "ATTENTE",
+      "support": 272.57,
+      "resistance": 289.43,
+      "source": "D\u00c9FAUT (temporaire)"
+    },
+    {
+      "sym": "CIH",
+      "nom": "CIH",
+      "prix": 324.0,
+      "rsi": 50,
+      "signal": "ATTENTE",
+      "support": 314.28,
+      "resistance": 333.72,
+      "source": "D\u00c9FAUT (temporaire)"
+    },
+    {
+      "sym": "MNG",
+      "nom": "MANAGEM",
+      "prix": 1985.0,
+      "rsi": 50,
+      "signal": "ATTENTE",
+      "support": 1925.45,
+      "resistance": 2044.55,
+      "source": "D\u00c9FAUT (temporaire)"
+    },
+    {
+      "sym": "SMI",
+      "nom": "SMI",
+      "prix": 1590.0,
+      "rsi": 50,
+      "signal": "ATTENTE",
+      "support": 1542.3,
+      "resistance": 1637.7,
+      "source": "D\u00c9FAUT (temporaire)"
+    },
+    {
+      "sym": "CMT",
+      "nom": "CMT",
+      "prix": 1105.0,
+      "rsi": 50,
+      "signal": "ATTENTE",
+      "support": 1071.85,
+      "resistance": 1138.15,
+      "source": "D\u00c9FAUT (temporaire)"
+    }
+  ],
+  "metaux": {
+    "precieux": {
+      "XAU": {
+        "nom": "Or",
+        "prix": 2350.5,
+        "variation": 0.8
+      },
+      "XAG": {
+        "nom": "Argent",
+        "prix": 28.75,
+        "variation": 1.2
+      }
+    },
+    "industriels": {
+      "XCU": {
+        "nom": "Cuivre",
+        "prix": 4.25,
+        "variation": 0.3
+      },
+      "XPB": {
+        "nom": "Plomb",
+        "prix": 2150,
+        "variation": -0.2
+      },
+      "XZN": {
+        "nom": "Zinc",
+        "prix": 2580,
+        "variation": 0.5
+      }
+    }
+  }
 }
