@@ -285,7 +285,7 @@ function detailApp() {
         
         async loadData(symbol) {
             try {
-                const res = await fetch('https://benlouka062-pixel.github.io/bourse-casa-bot./data.json?t=' + Date.now());
+                const res = await fetch('https://benlouka062-pixel.github.io/bourse-casa-bot/data.json?t=' + Date.now());
                 const data = await res.json();
                 
                 // Trouver l'action
