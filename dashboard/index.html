@@ -6,7 +6,6 @@
     <title>TAOUSSI TRADER · FINAL</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -18,22 +17,18 @@
         .trend-up { color: #00b8a9; }
         .trend-down { color: #ff6b6b; }
         .font-mono { font-family: 'JetBrains Mono', monospace; }
-        .badge-reel { background: rgba(0,184,169,0.2); color: #00b8a9; border: 1px solid #00b8a9; padding: 2px 8px; border-radius: 12px; font-size: 10px; }
-        .alert-btn { background: #2d3748; color: #fbbf24; border: 1px solid #fbbf24; padding: 4px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; transition: all 0.2s; }
-        .alert-btn:hover { background: #fbbf2420; }
-        .sparkline { width: 60px; height: 24px; background: transparent; }
+        .alert-btn { background: #2d3748; color: #fbbf24; border: 1px solid #fbbf24; padding: 4px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; }
+        .sparkline { width: 60px; height: 24px; }
         .news-card { background: #1a1a1a; border-left: 4px solid; padding: 12px; border-radius: 8px; margin-bottom: 8px; }
         .sentiment-positif { border-left-color: #00b8a9; }
         .sentiment-negatif { border-left-color: #ff6b6b; }
-        .loader { border: 2px solid #f3f3f3; border-top: 2px solid #00b8a9; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body class="p-4 min-h-screen">
 
 <div x-data="taoussiApp()" x-init="init()" class="max-w-7xl mx-auto">
     
-    <!-- HEADER DOUBLE HORLOGE (HEURE CORRIGÉE) -->
+    <!-- HEADER (heure corrigée sans secondes) -->
     <div class="glass-card p-4 mb-4 flex flex-wrap items-center justify-between">
         <div class="flex items-center space-x-3">
             <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center">
@@ -41,7 +36,7 @@
             </div>
             <div>
                 <h1 class="text-2xl font-bold bg-gradient-to-r from-green-400 to-green-600 bg-clip-text text-transparent">TAOUSSI TRADER</h1>
-                <p class="text-xs text-gray-500" x-text="`${actions.length} actions · 6 métaux`"></p>
+                <p class="text-xs text-gray-500" x-text="`${actions.length} actions`"></p>
             </div>
         </div>
         
@@ -60,44 +55,33 @@
         <div class="glass-card p-4"><p class="text-gray-500 text-sm">Variation</p><p class="text-2xl font-bold" x-text="variation || '---'"></p></div>
     </div>
 
-    <!-- 6 MÉTAUX -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-        <!-- Métaux précieux -->
+    <!-- 6 MÉTAUX SIMPLIFIÉS -->
+    <div class="grid grid-cols-2 gap-4 mb-4">
         <div class="glass-card p-4">
-            <h3 class="text-sm font-semibold text-gray-400 mb-3"><i class="fas fa-coins text-yellow-500 mr-2"></i>MÉTAUX PRÉCIEUX <span class="ml-2 text-xs text-green-500">✓ RÉELS</span></h3>
-            <div class="space-y-2">
-                <div class="flex justify-between items-center"><span>Or</span> <span class="font-mono" x-text="(metals.precieux?.XAU?.prix || 2350).toFixed(2) + ' USD'"></span></div>
-                <div class="flex justify-between items-center"><span>Argent</span> <span class="font-mono" x-text="(metals.precieux?.XAG?.prix || 28.7).toFixed(2) + ' USD'"></span></div>
-            </div>
+            <h3 class="text-sm font-semibold mb-3">🏅 PRÉCIEUX</h3>
+            <div>Or: <span x-text="(metals.precieux?.XAU?.prix || 2350).toFixed(2) + ' USD'"></span></div>
+            <div>Argent: <span x-text="(metals.precieux?.XAG?.prix || 28.7).toFixed(2) + ' USD'"></span></div>
         </div>
-        <!-- Métaux industriels -->
         <div class="glass-card p-4">
-            <h3 class="text-sm font-semibold text-gray-400 mb-3"><i class="fas fa-industry text-blue-500 mr-2"></i>MÉTAUX INDUSTRIELS</h3>
-            <div class="space-y-2">
-                <div class="flex justify-between items-center"><span>Cuivre</span> <span class="font-mono" x-text="(metals.industriels?.XCU?.prix || 4.25).toFixed(2) + ' USD'"></span></div>
-                <div class="flex justify-between items-center"><span>Zinc</span> <span class="font-mono" x-text="(metals.industriels?.XZN?.prix || 2580).toFixed(2) + ' USD'"></span></div>
-                <div class="flex justify-between items-center"><span>Plomb</span> <span class="font-mono" x-text="(metals.industriels?.XPB?.prix || 2150).toFixed(2) + ' USD'"></span></div>
-            </div>
+            <h3 class="text-sm font-semibold mb-3">🔧 INDUSTRIELS</h3>
+            <div>Cuivre: <span x-text="(metals.industriels?.XCU?.prix || 4.25).toFixed(2) + ' USD'"></span></div>
+            <div>Zinc: <span x-text="(metals.industriels?.XZN?.prix || 2580).toFixed(2) + ' USD'"></span></div>
+            <div>Plomb: <span x-text="(metals.industriels?.XPB?.prix || 2150).toFixed(2) + ' USD'"></span></div>
         </div>
     </div>
 
-    <!-- TABLEAU ACTIONS AVEC SPARKLINES CORRIGÉES -->
+    <!-- TABLEAU ACTIONS -->
     <div class="glass-card p-4 mb-4">
         <h2 class="text-lg font-semibold mb-4">ACTIONS</h2>
-        <div class="overflow-x-auto">
-            <table class="w-full">
-                <thead class="text-gray-400 text-sm border-b border-gray-800">
-                    <tr><th class="text-left py-3">Symbole</th><th class="text-left">Nom</th><th class="text-right">Prix</th><th class="text-right">Variation</th><th class="text-right">Tendance</th><th class="text-center">Détail</th></tr>
-                </thead>
-                <tbody id="actions-table-body"></tbody>
-            </table>
-        </div>
+        <div id="actions-container" class="space-y-2"></div>
     </div>
 
-    <!-- NEWS RSS (CORRIGÉ) -->
-    <div class="glass-card p-4 mb-4">
-        <h2 class="text-lg font-semibold mb-4 flex items-center"><i class="fas fa-newspaper text-blue-500 mr-2"></i>DERNIÈRES NEWS <span x-show="loadingNews" class="ml-2 loader"></span></h2>
-        <div id="news-container" class="space-y-3 max-h-96 overflow-y-auto"><p class="text-center text-gray-500 py-8">Chargement des news...</p></div>
+    <!-- NEWS -->
+    <div class="glass-card p-4">
+        <h2 class="text-lg font-semibold mb-4">📰 NEWS</h2>
+        <div id="news-container" class="space-y-2 max-h-64 overflow-y-auto">
+            <p class="text-center text-gray-500 py-4">Chargement...</p>
+        </div>
     </div>
 </div>
 
@@ -106,109 +90,81 @@ async function loadData() {
     try {
         const res = await fetch('https://benlouka062-pixel.github.io/bourse-casa-bot/data.json?t=' + Date.now());
         const data = await res.json();
-        if (!data.actions) return;
         
+        // Métaux
+        window.metals = data.metaux || { precieux: {}, industriels: {} };
+        
+        // Afficher actions sous forme de cartes cliquables
         let html = '';
         data.actions.forEach(a => {
-            const variation = ((Math.random() * 4 - 2)).toFixed(1);
-            html += `<tr class="border-b border-gray-800 hover:bg-gray-800/50 transition cursor-pointer" onclick="window.location.href='detail.html?symbol=${a.sym}'">
-                <td class="py-3 font-mono font-bold">${a.sym}</td>
-                <td class="text-gray-300 text-sm">${a.nom || ''}</td>
-                <td class="text-right font-mono">${a.prix?.toFixed(2) || '---'}</td>
-                <td class="text-right font-mono ${variation >= 0 ? 'trend-up' : 'trend-down'}">${variation >= 0 ? '+' : ''}${variation}%</td>
-                <td class="text-right"><canvas class="sparkline" id="spark-${a.sym}" width="60" height="24"></canvas></td>
-                <td class="text-center"><button class="alert-btn text-xs py-1 px-2" onclick="event.stopPropagation();alert('Alerte pour ${a.sym} (à connecter)')"><i class="fas fa-bell"></i></button></td>
-            </tr>`;
+            const variation = (Math.random() * 4 - 2).toFixed(1);
+            html += `<div class="bg-gray-800 p-3 rounded-lg cursor-pointer hover:bg-gray-700 transition" onclick="window.location.href='detail.html?symbol=${a.sym}'">
+                <div class="flex justify-between items-center">
+                    <div><span class="font-bold text-green-500">${a.sym}</span> <span class="text-sm text-gray-400">${a.nom || ''}</span></div>
+                    <span class="font-mono">${a.prix?.toFixed(2) || '---'} DH</span>
+                </div>
+                <div class="flex justify-between mt-1">
+                    <span class="text-xs">Variation: <span class="${variation >= 0 ? 'trend-up' : 'trend-down'}">${variation >= 0 ? '+' : ''}${variation}%</span></span>
+                    <button class="alert-btn text-xs py-0.5 px-2" onclick="event.stopPropagation();alert('Alerte ${a.sym} (à connecter)')">🔔</button>
+                </div>
+            </div>`;
         });
-        document.getElementById('actions-table-body').innerHTML = html;
-        
-        // Sparklines corrigées (centrées)
-        setTimeout(() => {
-            data.actions.forEach(a => {
-                const canvas = document.getElementById('spark-' + a.sym);
-                if (!canvas) return;
-                const ctx = canvas.getContext('2d');
-                const width = 60, height = 24;
-                const prices = [];
-                for (let i = 0; i < 10; i++) prices.push(a.prix * (0.95 + 0.01 * i + (Math.random() * 0.02 - 0.01)));
-                const min = Math.min(...prices), max = Math.max(...prices), range = max - min || 1;
-                ctx.clearRect(0, 0, width, height);
-                ctx.beginPath();
-                ctx.strokeStyle = variation >= 0 ? '#00b8a9' : '#ff6b6b';
-                ctx.lineWidth = 1.5;
-                for (let i = 0; i < prices.length; i++) {
-                    const x = (i / (prices.length - 1)) * width;
-                    // Formule corrigée pour centrer la courbe
-                    const y = 4 + ((max - prices[i]) / range) * (height - 8);
-                    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-                }
-                ctx.stroke();
-            });
-        }, 200);
+        document.getElementById('actions-container').innerHTML = html;
         
     } catch (e) {
-        document.getElementById('actions-table-body').innerHTML = '<tr><td colspan="6" class="text-center py-8 text-red-500">Erreur chargement</td></tr>';
+        document.getElementById('actions-container').innerHTML = '<p class="text-center text-red-500 py-4">Erreur chargement</p>';
     }
 }
 
 async function loadNews() {
-    document.getElementById('news-container').innerHTML = '<p class="text-center text-gray-500 py-8">Chargement des news...</p>';
     try {
-        // Utilisation d'un proxy CORS gratuit
-        const res = await fetch('https://api.codetabs.com/v1/proxy?quest=https://lematin.ma/rss');
-        const text = await res.text();
-        const parser = new DOMParser();
-        const xml = parser.parseFromString(text, 'text/xml');
-        const items = xml.querySelectorAll('item');
-        
-        let html = '';
-        items.forEach((item, index) => {
-            if (index < 5) {
-                const title = item.querySelector('title')?.textContent || '';
-                const description = item.querySelector('description')?.textContent || '';
+        const res = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https://lematin.ma/rss');
+        const data = await res.json();
+        if (data.items) {
+            let html = '';
+            data.items.slice(0, 5).forEach(item => {
                 let sentiment = 'neutre';
-                const lowerTitle = title.toLowerCase();
-                if (lowerTitle.includes('hausse') || lowerTitle.includes('progrès') || lowerTitle.includes('record')) sentiment = 'positif';
-                else if (lowerTitle.includes('baisse') || lowerTitle.includes('perte') || lowerTitle.includes('crise')) sentiment = 'negatif';
-                
-                html += `<div class="news-card sentiment-${sentiment}">
-                    <div class="flex justify-between"><span class="font-medium">${title.substring(0, 60)}...</span><span class="text-xs text-gray-500">Le Matin</span></div>
-                    <p class="text-sm text-gray-400 mt-1">${description.replace(/<[^>]*>/g, '').substring(0, 100)}...</p>
+                const title = item.title.toLowerCase();
+                if (title.includes('hausse') || title.includes('record')) sentiment = 'positif';
+                else if (title.includes('baisse') || title.includes('crise')) sentiment = 'negatif';
+                html += `<div class="news-card sentiment-${sentiment} p-2">
+                    <div class="text-sm font-medium">${item.title.substring(0, 50)}...</div>
+                    <div class="text-xs text-gray-500">Le Matin</div>
                 </div>`;
-            }
-        });
-        document.getElementById('news-container').innerHTML = html || '<p class="text-center text-gray-500 py-8">Aucune news récente</p>';
-        
+            });
+            document.getElementById('news-container').innerHTML = html;
+        }
     } catch (e) {
-        console.error('Erreur news:', e);
-        document.getElementById('news-container').innerHTML = '<p class="text-center text-gray-500 py-8">Erreur chargement news</p>';
+        document.getElementById('news-container').innerHTML = '<p class="text-center text-gray-500 py-4">News temporairement indisponibles</p>';
     }
 }
 
-// Heure corrigée (moins 1h par rapport à avant)
+// Heure corrigée (sans secondes)
 function updateTime() {
     const now = new Date();
-    // Heure Maroc = UTC+1 (c'est déjà bon)
     const moroccoTime = new Date(now.getTime() + 3600000);
     const nyTime = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
     
-    document.querySelectorAll('[x-text="moroccoTime"]').forEach(el => {
-        el.textContent = moroccoTime.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-    });
-    document.querySelectorAll('[x-text="nyTime"]').forEach(el => {
-        el.textContent = nyTime.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-    });
+    document.querySelector('[x-text="moroccoTime"]').textContent = 
+        moroccoTime.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    document.querySelector('[x-text="nyTime"]').textContent = 
+        nyTime.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
 }
 
+// Alpine.js store
 document.addEventListener('alpine:init', () => {
+    Alpine.store('metals', { precieux: {}, industriels: {} });
+    
     Alpine.data('taoussiApp', () => ({
-        moroccoTime: '', nyTime: '', masi: '---', volume: '---', variation: '---', 
-        actions: [], metals: { precieux: {}, industriels: {} }, loadingNews: false,
+        moroccoTime: '', nyTime: '', masi: '---', volume: '---', variation: '---', actions: [],
+        metals: { precieux: {}, industriels: {} },
         init() {
             updateTime();
-            setInterval(updateTime, 1000);
-            loadData().then(() => { this.actions = window.actions || []; });
+            setInterval(updateTime, 60000); // Mise à jour toutes les minutes
+            loadData();
             loadNews();
+            setInterval(loadData, 300000);
+            setInterval(loadNews, 600000);
         }
     }));
 });
