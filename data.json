@@ -1,5 +1,5 @@
 {
-  "date": "17/03/2026 21:58:39",
+  "date": "17/03/2026 22:06:39",
   "source": "\ud83d\udce1 TEMPS R\u00c9EL",
   "masi": null,
   "volume": "N/A",
@@ -57,170 +57,6 @@
       ]
     },
     {
-      "sym": "IAM",
-      "nom": "ITISSALAT",
-      "prix": 142.8,
-      "rsi": 50,
-      "macd": 0,
-      "signal_macd": 0,
-      "histogram_macd": 0,
-      "bb_haut": 149.94,
-      "bb_mid": 142.8,
-      "bb_bas": 135.66,
-      "support": 138.52,
-      "resistance": 147.08,
-      "signal": "ATTENTE",
-      "historique": [
-        135.66,
-        137.088,
-        138.51600000000002,
-        139.94400000000002,
-        141.372,
-        142.8,
-        144.228,
-        145.656,
-        147.084,
-        148.51200000000003,
-        149.94000000000003,
-        151.36800000000002,
-        152.796,
-        154.22400000000002,
-        155.652,
-        157.07999999999998,
-        158.50799999999998,
-        159.936,
-        161.364,
-        162.792,
-        164.22,
-        165.648,
-        167.076,
-        168.504,
-        169.93200000000002,
-        171.36,
-        172.788,
-        174.216,
-        175.644,
-        177.072
-      ],
-      "source": "\ud83d\udcbe CACHE"
-    },
-    {
-      "sym": "AGZ",
-      "nom": "AFRIQUIA GAZ",
-      "prix": 900.0,
-      "rsi": 50,
-      "signal": "ATTENTE",
-      "support": 873.0,
-      "resistance": 927.0,
-      "source": "\ud83d\udcbe CACHE",
-      "historique": [
-        900.0,
-        909.0,
-        918.0,
-        927.0,
-        936.0
-      ]
-    },
-    {
-      "sym": "TQM",
-      "nom": "TAQA MOROCCO",
-      "prix": 795.0,
-      "rsi": 50,
-      "macd": 0,
-      "signal_macd": 0,
-      "histogram_macd": 0,
-      "bb_haut": 834.75,
-      "bb_mid": 795.0,
-      "bb_bas": 755.25,
-      "support": 771.15,
-      "resistance": 818.85,
-      "signal": "ATTENTE",
-      "historique": [
-        755.25,
-        763.1999999999999,
-        771.15,
-        779.1,
-        787.05,
-        795.0,
-        802.95,
-        810.9,
-        818.85,
-        826.8000000000001,
-        834.75,
-        842.7,
-        850.6499999999999,
-        858.6,
-        866.5499999999998,
-        874.4999999999999,
-        882.4499999999999,
-        890.3999999999999,
-        898.3499999999999,
-        906.3,
-        914.2499999999999,
-        922.1999999999999,
-        930.15,
-        938.0999999999999,
-        946.05,
-        954.0,
-        961.9499999999999,
-        969.9,
-        977.85,
-        985.8
-      ],
-      "source": "\ud83d\udcbe CACHE"
-    },
-    {
-      "sym": "MNG",
-      "nom": "MANAGEM",
-      "prix": 5.0,
-      "rsi": 50,
-      "signal": "ATTENTE",
-      "support": 4.85,
-      "resistance": 5.15,
-      "source": "\ud83d\udcbe CACHE",
-      "historique": [
-        5.0,
-        5.05,
-        5.1,
-        5.15,
-        5.2
-      ]
-    },
-    {
-      "sym": "SMI",
-      "nom": "SMI",
-      "prix": 500.0,
-      "rsi": 50,
-      "signal": "ATTENTE",
-      "support": 485.0,
-      "resistance": 515.0,
-      "source": "\ud83d\udcbe CACHE",
-      "historique": [
-        500.0,
-        505.0,
-        510.0,
-        515.0,
-        520.0
-      ]
-    },
-    {
-      "sym": "CMT",
-      "nom": "CMT",
-      "prix": 695.0,
-      "rsi": 50,
-      "signal": "ATTENTE",
-      "support": 674.15,
-      "resistance": 715.85,
-      "source": "\ud83d\udcbe CACHE",
-      "historique": [
-        695.0,
-        701.95,
-        708.9,
-        715.85,
-        722.8000000000001
-      ]
-    },
-    {
       "sym": "CRS",
       "nom": "CARTIER SAADA",
       "prix": 29.0,
@@ -253,35 +89,18 @@
         88.58,
         89.44
       ]
-    },
-    {
-      "sym": "SOT",
-      "nom": "SOTHEMA",
-      "prix": 580.0,
-      "rsi": 50,
-      "signal": "ATTENTE",
-      "support": 562.6,
-      "resistance": 597.4,
-      "source": "R\u00c9EL",
-      "historique": [
-        580.0,
-        585.8,
-        591.6,
-        597.4,
-        603.2
-      ]
     }
   ],
   "metaux": {
     "precieux": {
       "XAU": {
         "nom": "Or",
-        "prix": 5006.61,
+        "prix": 5001.85,
         "variation": 0.8
       },
       "XAG": {
         "nom": "Argent",
-        "prix": 79.3,
+        "prix": 79.14,
         "variation": 1.2
       }
     },
