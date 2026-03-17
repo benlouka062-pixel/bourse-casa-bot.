@@ -1,5 +1,5 @@
 {
-  "date": "17/03/2026 20:47:50",
+  "date": "17/03/2026 21:02:02",
   "source": "\ud83d\udce1 TEMPS R\u00c9EL",
   "masi": null,
   "volume": "N/A",
@@ -307,12 +307,12 @@
     "precieux": {
       "XAU": {
         "nom": "Or",
-        "prix": 5003.82,
+        "prix": 5006.61,
         "variation": 0.8
       },
       "XAG": {
         "nom": "Argent",
-        "prix": 79.31,
+        "prix": 79.3,
         "variation": 1.2
       }
     },
