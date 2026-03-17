@@ -18,15 +18,12 @@ INVESTING_URLS = {
     "ADH": "https://www.investing.com/equities/addoha",
     "DHO": "https://www.investing.com/equities/delta-holding",
     "ENL": "https://www.investing.com/equities/ennakl",
-    "IAM": "https://www.investing.com/equities/iam",
-    "AGZ": "https://www.investing.com/equities/afriquia-gaz",
-    "TQM": "https://www.investing.com/equities/taqa-morocco",
-    "ATW": "https://www.investing.com/equities/attijariwafa-bank",
-    "BCP": "https://www.investing.com/equities/bcp",
-    "CIH": "https://www.investing.com/equities/cih",
-    "MNG": "https://www.investing.com/equities/managem",
-    "SMI": "https://www.investing.com/equities/smi",
-    "CMT": "https://www.investing.com/equities/ciments-du-maroc",
+    "IAM": "https://fr.investing.com/equities/itissalat-al-maghrib",          # ✅ Nouveau lien
+    "AGZ": "https://fr.investing.com/equities/afriquia-gaz",                  # ✅ Nouveau lien
+    "TQM": "https://fr.investing.com/equities/jorf-lasfar",                   # ✅ Nouveau lien (Taqa)
+    "MNG": "https://fr.investing.com/equities/managem",                       # ✅ Nouveau lien
+    "SMI": "https://fr.investing.com/equities/smi",                           # ✅ Nouveau lien
+    "CMT": "https://fr.investing.com/equities/miniere-touissit",              # ✅ Nouveau lien
     "TGCC": "https://www.investing.com/equities/tgcc",
     "CRS": "https://www.investing.com/equities/cartier-saada",
     "COL": "https://www.investing.com/equities/colorado",
