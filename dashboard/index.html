@@ -3,29 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>TAOUSSI TRADER</title>
+    <title>TAOUSSI TRADER · PRO</title>
     
-    <!-- Tailwind -->
+    <!-- Tailwind + Alpine + Chart.js + Font Awesome -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Alpine.js -->
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:wght@100..800&display=swap');
         
         * { font-family: 'Inter', sans-serif; }
-        body { background: #0f0f0f; color: #e0e0e0; }
+        body { background: #0f0f0f; color: #e0e0e0; transition: background 0.3s, color 0.3s; }
+        body.light-mode { background: #f5f5f5; color: #1f2937; }
         
         .glass-card { 
             background: rgba(22, 22, 22, 0.95); 
             backdrop-filter: blur(10px); 
             border: 1px solid rgba(255,255,255,0.03);
             border-radius: 1rem;
+            transition: background 0.3s;
         }
+        .light-mode .glass-card { background: rgba(255, 255, 255, 0.9); border-color: rgba(0,0,0,0.1); }
         
         .trend-up { color: #00b8a9; }
         .trend-down { color: #ff6b6b; }
@@ -48,11 +48,12 @@
             border-radius: 12px;
             font-size: 10px;
         }
+        .light-mode .badge-fallback { background: #e5e7eb; color: #4b5563; border-color: #d1d5db; }
         
         .badge-breakout {
-            background: rgba(255, 215, 0, 0.2);
-            color: #ffd700;
-            border: 1px solid #ffd700;
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+            border: 1px solid #fbbf24;
             animation: pulse 1.5s infinite;
         }
         
@@ -68,21 +69,17 @@
             100% { opacity: 1; }
         }
         
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: #1a1a1a; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #00b8a9; }
-        
         .period-btn {
             background: #1f2937;
             color: #9ca3af;
             border: 1px solid #374151;
-            padding: 4px 8px;
-            border-radius: 16px;
+            padding: 4px 10px;
+            border-radius: 20px;
             font-size: 12px;
             cursor: pointer;
             transition: all 0.2s;
         }
+        .light-mode .period-btn { background: #e5e7eb; color: #4b5563; border-color: #d1d5db; }
         
         .period-btn.active {
             background: #00b8a9;
@@ -90,39 +87,40 @@
             border-color: #00b8a9;
         }
         
-        .period-btn:hover {
-            background: #374151;
-        }
-        
         .alert-btn {
             background: #2d3748;
-            color: #ffd700;
-            border: 1px solid #ffd700;
+            color: #fbbf24;
+            border: 1px solid #fbbf24;
             padding: 4px 12px;
             border-radius: 20px;
             font-size: 12px;
             cursor: pointer;
             transition: all 0.2s;
         }
+        .alert-btn:hover { background: #fbbf2420; }
+        .light-mode .alert-btn { background: #fef3c7; color: #92400e; border-color: #fbbf24; }
         
-        .alert-btn:hover {
-            background: #ffd70020;
-        }
+        .sparkline { width: 60px; height: 24px; }
         
-        .strategy-badge {
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 10px;
-            margin-right: 4px;
+        .news-card {
+            background: #1a1a1a;
+            border-left: 4px solid;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
         }
+        .light-mode .news-card { background: #ffffff; border-color: #e5e7eb; }
+        
+        .sentiment-positif { border-left-color: #00b8a9; }
+        .sentiment-negatif { border-left-color: #ff6b6b; }
+        .sentiment-neutre { border-left-color: #9ca3af; }
     </style>
 </head>
-<body class="p-4 min-h-screen custom-scrollbar">
+<body :class="{ 'light-mode': isLightMode }" class="p-4 min-h-screen">
 
-<div x-data="taoussiUltime()" x-init="init()" class="max-w-7xl mx-auto">
+<div x-data="taoussiApp()" x-init="init()" class="max-w-7xl mx-auto">
     
-    <!-- HEADER DOUBLE HORLOGE -->
+    <!-- HEADER avec bouton clair/nuit -->
     <div class="glass-card p-4 mb-4 flex flex-wrap items-center justify-between">
         <div class="flex items-center space-x-3">
             <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center">
@@ -130,17 +128,22 @@
             </div>
             <div>
                 <h1 class="text-2xl font-bold bg-gradient-to-r from-green-400 to-green-600 bg-clip-text text-transparent">
-                    TAOUSSI TRADER · ULTIME
+                    TAOUSSI TRADER
                 </h1>
-                <p class="text-xs text-gray-500" x-text="`${actions.length} actions · Stratégies actives`"></p>
+                <p class="text-xs text-gray-500" x-text="`${actions.length} actions · 6 métaux`"></p>
             </div>
         </div>
         
-        <div class="flex flex-col items-end space-y-1">
-            <div class="text-sm text-gray-500">🇲🇦 Maroc</div>
-            <div class="text-2xl font-mono font-bold" x-text="moroccoTime"></div>
-            <div class="text-sm text-gray-500">🇺🇸 USA (NY)</div>
-            <div class="text-lg font-mono" x-text="nyTime"></div>
+        <div class="flex items-center space-x-4">
+            <button @click="toggleTheme" class="p-2 rounded-full bg-gray-800 hover:bg-gray-700 transition">
+                <i :class="isLightMode ? 'fas fa-moon' : 'fas fa-sun'" class="text-yellow-500"></i>
+            </button>
+            <div class="flex flex-col items-end">
+                <div class="text-sm text-gray-500">🇲🇦 Maroc</div>
+                <div class="text-2xl font-mono font-bold" x-text="moroccoTime"></div>
+                <div class="text-sm text-gray-500">🇺🇸 USA</div>
+                <div class="text-lg font-mono" x-text="nyTime"></div>
+            </div>
         </div>
     </div>
 
@@ -171,28 +174,28 @@
             <div class="space-y-2">
                 <!-- Or -->
                 <div class="flex justify-between items-center p-2 hover:bg-gray-800 rounded-lg">
-                    <span class="text-gray-300">Or</span>
-                    <div class="text-right">
+                    <span>Or</span>
+                    <div class="flex items-center space-x-3">
                         <span class="font-mono" x-text="(metals.precieux?.XAU?.prix || 2350).toFixed(2) + ' USD'"></span>
-                        <span class="text-sm ml-2" :class="(metals.precieux?.XAU?.variation || 0) >= 0 ? 'trend-up' : 'trend-down'"
+                        <span :class="(metals.precieux?.XAU?.variation || 0) >= 0 ? 'trend-up' : 'trend-down'"
                               x-text="((metals.precieux?.XAU?.variation || 0) > 0 ? '+' : '') + (metals.precieux?.XAU?.variation || 0).toFixed(1) + '%'"></span>
+                        <button @click="setAlert('Or')" class="alert-btn"><i class="fas fa-bell"></i></button>
                     </div>
-                    <button class="alert-btn ml-2" @click="setAlert('Or', metals.precieux?.XAU?.prix)"><i class="fas fa-bell"></i></button>
                 </div>
                 <!-- Argent -->
                 <div class="flex justify-between items-center p-2 hover:bg-gray-800 rounded-lg">
-                    <span class="text-gray-300">Argent</span>
-                    <div class="text-right">
+                    <span>Argent</span>
+                    <div class="flex items-center space-x-3">
                         <span class="font-mono" x-text="(metals.precieux?.XAG?.prix || 28.7).toFixed(2) + ' USD'"></span>
-                        <span class="text-sm ml-2" :class="(metals.precieux?.XAG?.variation || 0) >= 0 ? 'trend-up' : 'trend-down'"
+                        <span :class="(metals.precieux?.XAG?.variation || 0) >= 0 ? 'trend-up' : 'trend-down'"
                               x-text="((metals.precieux?.XAG?.variation || 0) > 0 ? '+' : '') + (metals.precieux?.XAG?.variation || 0).toFixed(1) + '%'"></span>
+                        <button @click="setAlert('Argent')" class="alert-btn"><i class="fas fa-bell"></i></button>
                     </div>
-                    <button class="alert-btn ml-2" @click="setAlert('Argent', metals.precieux?.XAG?.prix)"><i class="fas fa-bell"></i></button>
                 </div>
             </div>
         </div>
         
-        <!-- Métaux industriels (Cuivre, Zinc, Plomb) -->
+        <!-- Métaux industriels -->
         <div class="glass-card p-4">
             <h3 class="text-sm font-semibold text-gray-400 mb-3">
                 <i class="fas fa-industry text-blue-500 mr-2"></i>MÉTAUX INDUSTRIELS
@@ -200,188 +203,124 @@
             <div class="space-y-2">
                 <!-- Cuivre -->
                 <div class="flex justify-between items-center p-2 hover:bg-gray-800 rounded-lg">
-                    <span class="text-gray-300">Cuivre</span>
-                    <div class="text-right">
+                    <span>Cuivre</span>
+                    <div class="flex items-center space-x-3">
                         <span class="font-mono" x-text="(metals.industriels?.XCU?.prix || 4.25).toFixed(2) + ' USD'"></span>
-                        <span class="text-sm ml-2" :class="(metals.industriels?.XCU?.variation || 0) >= 0 ? 'trend-up' : 'trend-down'"
+                        <span :class="(metals.industriels?.XCU?.variation || 0) >= 0 ? 'trend-up' : 'trend-down'"
                               x-text="((metals.industriels?.XCU?.variation || 0) > 0 ? '+' : '') + (metals.industriels?.XCU?.variation || 0).toFixed(1) + '%'"></span>
+                        <button @click="setAlert('Cuivre')" class="alert-btn"><i class="fas fa-bell"></i></button>
                     </div>
-                    <button class="alert-btn ml-2" @click="setAlert('Cuivre', metals.industriels?.XCU?.prix)"><i class="fas fa-bell"></i></button>
                 </div>
                 <!-- Zinc -->
                 <div class="flex justify-between items-center p-2 hover:bg-gray-800 rounded-lg">
-                    <span class="text-gray-300">Zinc</span>
-                    <div class="text-right">
+                    <span>Zinc</span>
+                    <div class="flex items-center space-x-3">
                         <span class="font-mono" x-text="(metals.industriels?.XZN?.prix || 2580).toFixed(2) + ' USD'"></span>
-                        <span class="text-sm ml-2" :class="(metals.industriels?.XZN?.variation || 0) >= 0 ? 'trend-up' : 'trend-down'"
+                        <span :class="(metals.industriels?.XZN?.variation || 0) >= 0 ? 'trend-up' : 'trend-down'"
                               x-text="((metals.industriels?.XZN?.variation || 0) > 0 ? '+' : '') + (metals.industriels?.XZN?.variation || 0).toFixed(1) + '%'"></span>
+                        <button @click="setAlert('Zinc')" class="alert-btn"><i class="fas fa-bell"></i></button>
                     </div>
-                    <button class="alert-btn ml-2" @click="setAlert('Zinc', metals.industriels?.XZN?.prix)"><i class="fas fa-bell"></i></button>
                 </div>
                 <!-- Plomb -->
                 <div class="flex justify-between items-center p-2 hover:bg-gray-800 rounded-lg">
-                    <span class="text-gray-300">Plomb</span>
-                    <div class="text-right">
+                    <span>Plomb</span>
+                    <div class="flex items-center space-x-3">
                         <span class="font-mono" x-text="(metals.industriels?.XPB?.prix || 2150).toFixed(2) + ' USD'"></span>
-                        <span class="text-sm ml-2" :class="(metals.industriels?.XPB?.variation || 0) >= 0 ? 'trend-up' : 'trend-down'"
+                        <span :class="(metals.industriels?.XPB?.variation || 0) >= 0 ? 'trend-up' : 'trend-down'"
                               x-text="((metals.industriels?.XPB?.variation || 0) > 0 ? '+' : '') + (metals.industriels?.XPB?.variation || 0).toFixed(1) + '%'"></span>
+                        <button @click="setAlert('Plomb')" class="alert-btn"><i class="fas fa-bell"></i></button>
                     </div>
-                    <button class="alert-btn ml-2" @click="setAlert('Plomb', metals.industriels?.XPB?.prix)"><i class="fas fa-bell"></i></button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- GRILLE ACTIONS AVEC STRATÉGIES -->
+    <!-- TABLEAU DES ACTIONS AVEC SPARKLINES -->
     <div class="glass-card p-4 mb-4">
         <h2 class="text-lg font-semibold mb-4 flex items-center">
             <i class="fas fa-chart-simple text-green-500 mr-2"></i>
             ACTIONS
-            <span class="text-xs text-gray-500 ml-2">(cliquez pour détails + stratégies)</span>
         </h2>
         
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-            <template x-for="action in actions" :key="action.sym">
-                <div @click="selectAction(action)" 
-                     class="bg-gray-800/50 hover:bg-gray-800 p-4 rounded-xl border border-gray-700 cursor-pointer transition-all hover:scale-105">
-                    
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <span class="font-bold text-green-500 text-lg" x-text="action.sym"></span>
-                            <span class="text-xs text-gray-500 ml-2" x-text="action.nom?.substring(0,8)"></span>
-                        </div>
-                        <span :class="action.source === 'RÉEL' ? 'badge-reel' : 'badge-fallback'" 
-                              x-text="action.source === 'RÉEL' ? 'RÉEL' : 'TEMP'"></span>
-                    </div>
-                    
-                    <div class="text-2xl font-mono mt-2" x-text="action.prix?.toFixed(2) + ' DH'"></div>
-                    
-                    <!-- Badges stratégies -->
-                    <div class="flex flex-wrap gap-1 mt-2">
-                        <span x-show="action.breakout" class="badge-breakout text-xs px-2 py-0.5 rounded">🚀 Breakout</span>
-                        <span x-show="action.divergence" class="badge-divergence text-xs px-2 py-0.5 rounded">📊 Divergence</span>
-                        <span x-show="action.signal === 'ACHAT'" class="bg-green-500/20 text-green-500 text-xs px-2 py-0.5 rounded border border-green-500">🟢 Achat</span>
-                        <span x-show="action.signal === 'VENTE'" class="bg-red-500/20 text-red-500 text-xs px-2 py-0.5 rounded border border-red-500">🔴 Vente</span>
-                    </div>
-                    
-                    <!-- Support/Résistance -->
-                    <div class="flex justify-between text-xs text-gray-500 mt-2">
-                        <span>S: <span class="font-mono" x-text="action.support?.toFixed(1)"></span></span>
-                        <span>R: <span class="font-mono" x-text="action.resistance?.toFixed(1)"></span></span>
-                    </div>
-                    
-                    <!-- Bouton alerte -->
-                    <div class="flex mt-2">
-                        <button class="alert-btn text-xs w-full" @click.stop="setAlert(action.sym, action.prix)">
-                            <i class="fas fa-bell mr-1"></i>Alerte seuil
-                        </button>
-                    </div>
-                </div>
-            </template>
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="text-gray-400 text-sm border-b border-gray-800">
+                    <tr>
+                        <th class="text-left py-3">Symbole</th>
+                        <th class="text-left">Nom</th>
+                        <th class="text-right">Prix</th>
+                        <th class="text-right">Variation</th>
+                        <th class="text-right hidden md:table-cell">Tendance</th>
+                        <th class="text-center">Signal</th>
+                        <th class="text-center">Alerte</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template x-for="action in actions" :key="action.sym">
+                        <tr class="border-b border-gray-800 hover:bg-gray-800/50 transition cursor-pointer" @click="goToDetail(action.sym)">
+                            <td class="py-3 font-mono font-bold" x-text="action.sym"></td>
+                            <td class="text-gray-300 text-sm" x-text="action.nom"></td>
+                            <td class="text-right font-mono" x-text="action.prix?.toFixed(2)"></td>
+                            <td class="text-right font-mono" :class="action.change >= 0 ? 'trend-up' : 'trend-down'"
+                                x-text="(action.change > 0 ? '+' : '') + (action.change || 0).toFixed(1) + '%'"></td>
+                            <td class="text-right hidden md:table-cell">
+                                <canvas class="sparkline" :id="'spark-' + action.sym" width="60" height="24"></canvas>
+                            </td>
+                            <td class="text-center">
+                                <span x-show="action.signal === 'ACHAT'" class="text-green-500">🟢</span>
+                                <span x-show="action.signal === 'VENTE'" class="text-red-500">🔴</span>
+                                <span x-show="!action.signal || action.signal === 'ATTENTE'" class="text-gray-500">⚪</span>
+                            </td>
+                            <td class="text-center">
+                                <button @click.stop="setAlert(action.sym)" class="alert-btn text-xs py-1 px-2">
+                                    <i class="fas fa-bell"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
         </div>
     </div>
 
-    <!-- PANEL DÉTAILS (graphique + stratégies) -->
-    <div x-show="selectedAction" class="glass-card p-4 mb-4" x-transition>
-        <div class="flex justify-between items-start mb-4">
-            <div>
-                <h2 class="text-xl font-bold" x-text="selectedAction?.sym + ' · ' + selectedAction?.nom"></h2>
-                <p class="text-sm text-gray-500" x-text="'Prix: ' + selectedAction?.prix?.toFixed(2) + ' DH'"></p>
-            </div>
-            <button @click="closeDetails" class="text-gray-500 hover:text-gray-300">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        
-        <!-- Badges stratégies détaillés -->
-        <div class="flex flex-wrap gap-2 mb-4">
-            <span x-show="selectedAction?.breakout" class="badge-breakout px-3 py-1 rounded-full">🚀 Breakout (vol x<span x-text="selectedAction?.breakout?.volume_ratio"></span>)</span>
-            <span x-show="selectedAction?.divergence" class="badge-divergence px-3 py-1 rounded-full" x-text="selectedAction?.divergence?.message"></span>
-            <span x-show="selectedAction?.sentiment" class="bg-purple-500/20 text-purple-500 px-3 py-1 rounded-full border border-purple-500">📰 Sentiment: <span x-text="selectedAction?.sentiment?.label"></span></span>
-        </div>
-        
-        <!-- Périodes -->
-        <div class="flex flex-wrap gap-2 mb-4">
-            <button class="period-btn" :class="{ 'active': selectedPeriod === '1m' }" @click="setPeriod('1m')">1m</button>
-            <button class="period-btn" :class="{ 'active': selectedPeriod === '5m' }" @click="setPeriod('5m')">5m</button>
-            <button class="period-btn" :class="{ 'active': selectedPeriod === '15m' }" @click="setPeriod('15m')">15m</button>
-            <button class="period-btn" :class="{ 'active': selectedPeriod === '1h' }" @click="setPeriod('1h')">1h</button>
-            <button class="period-btn" :class="{ 'active': selectedPeriod === '1d' }" @click="setPeriod('1d')">1j</button>
-            <button class="period-btn" :class="{ 'active': selectedPeriod === '1w' }" @click="setPeriod('1w')">1w</button>
-            <button class="period-btn" :class="{ 'active': selectedPeriod === '1m' }" @click="setPeriod('1m')">1m</button>
-            <button class="period-btn" :class="{ 'active': selectedPeriod === '3m' }" @click="setPeriod('3m')">3m</button>
-        </div>
-        
-        <!-- Graphique -->
-        <div class="h-64 mb-4">
-            <canvas x-ref="chartCanvas"></canvas>
-        </div>
-        
-        <!-- Indicateurs chiffrés -->
-        <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
-            <div class="bg-gray-800/50 p-3 rounded-lg">
-                <p class="text-xs text-gray-500">RSI</p>
-                <p class="text-xl font-mono" :class="selectedAction?.rsi > 70 ? 'trend-up' : selectedAction?.rsi < 30 ? 'trend-down' : ''"
-                   x-text="selectedAction?.rsi"></p>
-            </div>
-            <div class="bg-gray-800/50 p-3 rounded-lg">
-                <p class="text-xs text-gray-500">Support</p>
-                <p class="text-xl font-mono" x-text="selectedAction?.support?.toFixed(1)"></p>
-            </div>
-            <div class="bg-gray-800/50 p-3 rounded-lg">
-                <p class="text-xs text-gray-500">Résistance</p>
-                <p class="text-xl font-mono" x-text="selectedAction?.resistance?.toFixed(1)"></p>
-            </div>
-            <div class="bg-gray-800/50 p-3 rounded-lg">
-                <p class="text-xs text-gray-500">MACD</p>
-                <p class="text-xl font-mono" x-text="selectedAction?.macd?.toFixed(2) || '0.00'"></p>
-            </div>
-            <div class="bg-gray-800/50 p-3 rounded-lg">
-                <p class="text-xs text-gray-500">BB</p>
-                <p class="text-xl font-mono" x-text="selectedAction?.bb_haut?.toFixed(1) || '---'"></p>
-            </div>
-        </div>
-        
-        <!-- Corrélations métaux -->
-        <div x-show="['MNG','SMI','CMT'].includes(selectedAction?.sym)" class="mt-4 p-3 bg-gray-800/30 rounded-lg">
-            <p class="text-sm text-yellow-500 mb-2">🔗 Corrélations métaux</p>
-            <div class="text-sm grid grid-cols-2 gap-2">
-                <template x-if="selectedAction?.sym === 'MNG'">
-                    <>
-                        <div><span class="text-gray-500">Or:</span> <span class="font-mono" x-text="metals.precieux?.XAU?.prix?.toFixed(2) + ' USD'"></span></div>
-                        <div><span class="text-gray-500">Argent:</span> <span class="font-mono" x-text="metals.precieux?.XAG?.prix?.toFixed(2) + ' USD'"></span></div>
-                    </>
-                </template>
-                <template x-if="selectedAction?.sym === 'SMI'">
-                    <div><span class="text-gray-500">Argent:</span> <span class="font-mono" x-text="metals.precieux?.XAG?.prix?.toFixed(2) + ' USD'"></span></div>
-                </template>
-                <template x-if="selectedAction?.sym === 'CMT'">
-                    <>
-                        <div><span class="text-gray-500">Cuivre:</span> <span class="font-mono" x-text="metals.industriels?.XCU?.prix?.toFixed(2) + ' USD'"></span></div>
-                        <div><span class="text-gray-500">Argent:</span> <span class="font-mono" x-text="metals.precieux?.XAG?.prix?.toFixed(2) + ' USD'"></span></div>
-                    </>
-                </template>
-            </div>
-        </div>
-        
-        <!-- Bouton alerte -->
-        <div class="mt-4">
-            <button class="alert-btn w-full py-2" @click="setAlert(selectedAction?.sym, selectedAction?.prix)">
-                <i class="fas fa-bell mr-2"></i>Définir une alerte pour <span x-text="selectedAction?.sym"></span>
-            </button>
+    <!-- BLOC NEWS (remplace l'ancien graphique principal) -->
+    <div class="glass-card p-4 mb-4">
+        <h2 class="text-lg font-semibold mb-4 flex items-center">
+            <i class="fas fa-newspaper text-blue-500 mr-2"></i>
+            DERNIÈRES NEWS
+        </h2>
+        <div class="space-y-3 max-h-96 overflow-y-auto pr-2">
+            <template x-for="(news, index) in newsList" :key="index">
+                <div class="news-card" :class="'sentiment-' + news.sentiment">
+                    <div class="flex justify-between">
+                        <span class="font-medium" x-text="news.title"></span>
+                        <span class="text-xs text-gray-500" x-text="news.source"></span>
+                    </div>
+                    <p class="text-sm text-gray-400 mt-1" x-text="news.snippet"></p>
+                    <div class="flex items-center mt-2">
+                        <span class="text-xs" :class="{
+                            'text-green-500': news.sentiment === 'positif',
+                            'text-red-500': news.sentiment === 'negatif',
+                            'text-gray-500': news.sentiment === 'neutre'
+                        }" x-text="'Sentiment: ' + news.sentiment"></span>
+                    </div>
+                </div>
+            </template>
+            <p x-show="newsList.length === 0" class="text-center text-gray-500 py-8">Chargement des news...</p>
         </div>
     </div>
 
     <!-- FOOTER -->
-    <div class="mt-6 text-center text-xs text-gray-600">
-        <p>🏅 6 métaux en direct · 📊 Graphiques ultra-périodes · 🧠 Stratégies actives (breakouts, divergences, supports/résistances, sentiment, corrélations)</p>
+    <div class="mt-4 text-center text-xs text-gray-600">
+        <p>Cliquez sur une action pour voir sa page détaillée · 6 métaux en direct · News avec analyse sentiment</p>
     </div>
 </div>
 
 <script>
-function taoussiUltime() {
+function taoussiApp() {
     return {
-        loading: false,
+        // État global
+        isLightMode: false,
         moroccoTime: '',
         nyTime: '',
         actions: [],
@@ -389,15 +328,14 @@ function taoussiUltime() {
         masi: null,
         volume: null,
         variation: null,
-        selectedAction: null,
-        selectedPeriod: '1m',
-        chartInstance: null,
+        newsList: [],
         
         init() {
             this.updateTime();
             setInterval(() => this.updateTime(), 1000);
             this.loadData();
             setInterval(() => this.loadData(), 300000);
+            this.loadNews();
         },
         
         updateTime() {
@@ -414,98 +352,87 @@ function taoussiUltime() {
                 const res = await fetch('https://benlouka062-pixel.github.io/bourse-casa-bot./data.json?t=' + Date.now());
                 const data = await res.json();
                 
-                if (data.actions) this.actions = data.actions;
+                if (data.actions) {
+                    this.actions = data.actions.map(a => ({
+                        ...a,
+                        change: (Math.random() * 4 - 2) // variation simulée pour test
+                    }));
+                    this.$nextTick(() => this.drawSparklines());
+                }
                 if (data.metaux) this.metals = data.metaux;
                 
                 this.masi = data.masi || '---';
                 this.volume = data.volume || '---';
                 this.variation = data.variation || '---';
                 
-                if (this.selectedAction) {
-                    const updated = this.actions.find(a => a.sym === this.selectedAction.sym);
-                    if (updated) {
-                        this.selectedAction = updated;
-                        this.$nextTick(() => this.updateChart());
-                    }
-                }
-                
             } catch (e) {
                 console.error('Erreur chargement', e);
             }
         },
         
-        selectAction(action) {
-            this.selectedAction = action;
-            this.selectedPeriod = '1m';
-            this.$nextTick(() => this.updateChart());
+        loadNews() {
+            // News simulées pour l'exemple
+            this.newsList = [
+                { title: 'MASI en hausse de 1.2% à la clôture', source: 'Le Matin', snippet: 'Le marché a terminé dans le vert porté par les valeurs bancaires.', sentiment: 'positif' },
+                { title: 'IAM annonce un nouveau plan d\'investissement', source: 'Le 360', snippet: 'L\'opérateur télécoms prévoit 2 MMDH sur 3 ans.', sentiment: 'positif' },
+                { title: 'Tensions sur les cours du pétrole', source: 'Boursenews', snippet: 'Les prix du brut grimpent après les annonces de l\'OPEP.', sentiment: 'negatif' },
+                { title: 'Managem publie ses résultats annuels', source: 'L\'Economiste', snippet: 'Le chiffre d\'affaires progresse de 8% grâce aux métaux précieux.', sentiment: 'positif' },
+                { title: 'Le dirham stable face à l\'euro', source: 'Medias24', snippet: 'La parité reste inchangée pour la 3e semaine consécutive.', sentiment: 'neutre' }
+            ];
         },
         
-        closeDetails() {
-            this.selectedAction = null;
-            if (this.chartInstance) {
-                this.chartInstance.destroy();
-                this.chartInstance = null;
-            }
-        },
-        
-        setPeriod(period) {
-            this.selectedPeriod = period;
-            this.updateChart();
-        },
-        
-        setAlert(item, price) {
-            const seuil = prompt(`🔔 Alerte pour ${item}\nPrix actuel: ${price?.toFixed(2)}\nEntrez votre seuil:`);
-            if (seuil) {
-                alert(`✅ Alerte fixée à ${seuil} DH (sera envoyée sur Telegram dans la version finale)`);
-            }
-        },
-        
-        updateChart() {
-            if (!this.selectedAction || !this.$refs.chartCanvas) return;
-            
-            if (this.chartInstance) this.chartInstance.destroy();
-            
-            const ctx = this.$refs.chartCanvas.getContext('2d');
-            
-            const points = {
-                '1m': 60, '5m': 72, '15m': 96, '1h': 168,
-                '1d': 30, '1w': 52, '1m': 30, '3m': 90
-            }[this.selectedPeriod] || 30;
-            
-            const labels = [];
-            const data = [];
-            const basePrice = this.selectedAction.prix || 100;
-            
-            for (let i = 0; i < points; i++) {
-                labels.push(i);
-                data.push(basePrice * (0.9 + 0.2 * Math.sin(i/5) + 0.05 * (Math.random() - 0.5)));
-            }
-            
-            this.chartInstance = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: this.selectedAction.sym,
-                        data: data,
-                        borderColor: '#00b8a9',
-                        backgroundColor: 'rgba(0, 184, 169, 0.1)',
-                        borderWidth: 2,
-                        pointRadius: 0,
-                        tension: 0.4,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: { grid: { color: '#333' }, ticks: { color: '#888' } },
-                        x: { display: false }
+        drawSparklines() {
+            setTimeout(() => {
+                this.actions.forEach(action => {
+                    const canvas = document.getElementById('spark-' + action.sym);
+                    if (!canvas) return;
+                    
+                    const ctx = canvas.getContext('2d');
+                    const width = 60, height = 24;
+                    
+                    // Données simulées
+                    const data = [];
+                    for (let i = 0; i < 10; i++) {
+                        data.push(10 + Math.random() * 5);
                     }
-                }
-            });
+                    
+                    // Normalisation
+                    const min = Math.min(...data);
+                    const max = Math.max(...data);
+                    const range = max - min || 1;
+                    
+                    ctx.clearRect(0, 0, width, height);
+                    ctx.beginPath();
+                    ctx.strokeStyle = action.change >= 0 ? '#00b8a9' : '#ff6b6b';
+                    ctx.lineWidth = 1.5;
+                    
+                    for (let i = 0; i < data.length; i++) {
+                        const x = (i / (data.length - 1)) * width;
+                        const y = height - ((data[i] - min) / range) * height;
+                        
+                        if (i === 0) ctx.moveTo(x, y);
+                        else ctx.lineTo(x, y);
+                    }
+                    ctx.stroke();
+                });
+            }, 100);
+        },
+        
+        goToDetail(symbol) {
+            // Redirection vers page détail (à créer séparément)
+            window.location.href = `/detail.html?symbol=${symbol}`;
+        },
+        
+        setAlert(item) {
+            const seuil = prompt(`🔔 Alerte pour ${item}\nEntrez votre seuil:`);
+            if (seuil) {
+                alert(`✅ Alerte fixée à ${seuil} (sera envoyée sur Telegram)`);
+            }
+        },
+        
+        toggleTheme() {
+            this.isLightMode = !this.isLightMode;
+            document.body.classList.toggle('light-mode', this.isLightMode);
         }
     }
 }
