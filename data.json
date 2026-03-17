@@ -1,6 +1,6 @@
 {
-  "date": "17/03/2026 17:24:38",
-  "source": "\ud83d\udce1 GOLDAPI + INDICATEURS",
+  "date": "17/03/2026 17:48:04",
+  "source": "\ud83d\udcbe CACHE (march\u00e9 ferm\u00e9)",
   "masi": null,
   "volume": "N/A",
   "variation": "N/A",
@@ -51,7 +51,7 @@
         31.365,
         31.62
       ],
-      "source": "D\u00c9FAUT"
+      "source": "\ud83d\udcbe CACHE"
     },
     {
       "sym": "DHO",
@@ -99,7 +99,7 @@
         182.40900000000002,
         183.89200000000002
       ],
-      "source": "D\u00c9FAUT"
+      "source": "\ud83d\udcbe CACHE"
     },
     {
       "sym": "ENL",
@@ -147,7 +147,7 @@
         216.72599999999997,
         218.48799999999997
       ],
-      "source": "D\u00c9FAUT"
+      "source": "\ud83d\udcbe CACHE"
     },
     {
       "sym": "IAM",
@@ -195,7 +195,7 @@
         175.644,
         177.072
       ],
-      "source": "D\u00c9FAUT"
+      "source": "\ud83d\udcbe CACHE"
     },
     {
       "sym": "AGZ",
@@ -243,7 +243,7 @@
         2681.4,
         2703.2
       ],
-      "source": "D\u00c9FAUT"
+      "source": "\ud83d\udcbe CACHE"
     },
     {
       "sym": "TQM",
@@ -291,7 +291,7 @@
         977.85,
         985.8
       ],
-      "source": "D\u00c9FAUT"
+      "source": "\ud83d\udcbe CACHE"
     },
     {
       "sym": "ATW",
@@ -339,7 +339,7 @@
         555.96,
         560.48
       ],
-      "source": "D\u00c9FAUT"
+      "source": "\ud83d\udcbe CACHE"
     },
     {
       "sym": "BCP",
@@ -387,7 +387,7 @@
         345.63,
         348.44
       ],
-      "source": "D\u00c9FAUT"
+      "source": "\ud83d\udcbe CACHE"
     },
     {
       "sym": "CIH",
@@ -435,7 +435,7 @@
         398.52,
         401.76
       ],
-      "source": "D\u00c9FAUT"
+      "source": "\ud83d\udcbe CACHE"
     },
     {
       "sym": "MNG",
@@ -483,7 +483,7 @@
         2441.55,
         2461.4
       ],
-      "source": "D\u00c9FAUT"
+      "source": "\ud83d\udcbe CACHE"
     },
     {
       "sym": "SMI",
@@ -531,7 +531,7 @@
         1955.7,
         1971.6
       ],
-      "source": "D\u00c9FAUT"
+      "source": "\ud83d\udcbe CACHE"
     },
     {
       "sym": "CMT",
@@ -579,19 +579,19 @@
         1359.15,
         1370.2
       ],
-      "source": "D\u00c9FAUT"
+      "source": "\ud83d\udcbe CACHE"
     }
   ],
   "metaux": {
     "precieux": {
       "XAU": {
         "nom": "Or",
-        "prix": 5006.85,
+        "prix": 4998.93,
         "variation": 0.8
       },
       "XAG": {
         "nom": "Argent",
-        "prix": 79.73,
+        "prix": 79.49,
         "variation": 1.2
       }
     },
