@@ -74,7 +74,7 @@
 
     <!-- MÉTAUX PRÉCIEUX + INDUSTRIELS -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
-        <!-- Métaux précieux (Or, Argent) -->
+        <!-- Métaux précieux -->
         <div class="glass-card p-5">
             <div class="flex items-center justify-between mb-4">
                 <div class="flex items-center space-x-2">
@@ -104,11 +104,11 @@
                     <div class="text-xs" :class="(metaux?.precieux?.XAG?.variation || 0) >= 0 ? 'trend-up' : 'trend-down'"
                          x-text="((metaux?.precieux?.XAG?.variation || 0) > 0 ? '+' : '') + (metaux?.precieux?.XAG?.variation || 0).toFixed(1) + '%'"></div>
                 </div>
-                <div class="metal-item opacity-0"></div> <!-- placeholder pour garder la grille -->
+                <div class="metal-item opacity-0"></div> <!-- placeholder -->
             </div>
         </div>
 
-        <!-- Métaux industriels (Cuivre, Zinc, Plomb) -->
+        <!-- Métaux industriels -->
         <div class="glass-card p-5">
             <div class="flex items-center justify-between mb-4">
                 <div class="flex items-center space-x-2">
@@ -162,90 +162,70 @@
             <span class="text-sm text-gray-500" x-text="actions.length + ' valeurs'"></span>
         </div>
         
-        <div id="actions-container" class="space-y-2 max-h-96 overflow-y-auto pr-2"></div>
+        <div id="actions-container" class="space-y-2 max-h-96 overflow-y-auto pr-2">
+            <template x-for="action in actions" :key="action.sym">
+                <div class="action-card" @click="window.location.href='detail.html?symbol=' + action.sym">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="font-bold text-emerald-500 text-lg" x-text="action.sym"></span>
+                            <span class="text-sm text-gray-500 ml-2" x-text="action.nom || ''"></span>
+                        </div>
+                        <span class="font-mono text-lg font-bold" x-text="action.prix?.toFixed(2) + ' DH'"></span>
+                    </div>
+                    <div class="flex justify-between items-center mt-3">
+                        <span class="text-sm">RSI: <span :class="action.rsi > 70 ? 'trend-up' : action.rsi < 30 ? 'trend-down' : ''" x-text="action.rsi || '--'"></span></span>
+                        <span class="text-sm">Signal: <span :class="action.signal === 'ACHAT' ? 'text-green-500' : action.signal === 'VENTE' ? 'text-red-500' : ''" x-text="action.signal || 'ATTENTE'"></span></span>
+                    </div>
+                </div>
+            </template>
+            <p x-show="actions.length === 0" class="text-center text-gray-500 py-4">Aucune action disponible</p>
+        </div>
     </div>
 </div>
 
 <script>
-async function loadData() {
-    try {
-        const res = await fetch('https://benlouka062-pixel.github.io/bourse-casa-bot/data.json?t=' + Date.now());
-        const data = await res.json();
-        
-        // Mise à jour Alpine store
-        Alpine.store('metaux', data.metaux || { precieux: {}, industriels: {} });
-        Alpine.store('masi', data.masi);
-        Alpine.store('volume', data.volume);
-        Alpine.store('variation', data.variation);
-        
-        // Actions
-        let html = '';
-        if (data.actions && data.actions.length > 0) {
-            data.actions.forEach(a => {
-                html += `<div class="action-card" onclick="window.location.href='detail.html?symbol=${a.sym}'">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <span class="font-bold text-emerald-500 text-lg">${a.sym}</span>
-                            <span class="text-sm text-gray-500 ml-2">${a.nom || ''}</span>
-                        </div>
-                        <span class="font-mono text-lg font-bold">${a.prix?.toFixed(2) || '---'} DH</span>
-                    </div>
-                    <div class="flex justify-between items-center mt-3">
-                        <span class="text-sm">RSI: <span class="${a.rsi > 70 ? 'trend-up' : a.rsi < 30 ? 'trend-down' : ''} font-mono">${a.rsi || '--'}</span></span>
-                        <span class="text-sm">Signal: <span class="${a.signal === 'ACHAT' ? 'text-green-500' : a.signal === 'VENTE' ? 'text-red-500' : ''}">${a.signal || 'ATTENTE'}</span></span>
-                    </div>
-                </div>`;
-            });
-        } else {
-            html = '<p class="text-center text-gray-500 py-4">Aucune action disponible</p>';
-        }
-        document.getElementById('actions-container').innerHTML = html;
-        
-    } catch (e) {
-        console.error('Erreur chargement:', e);
-        document.getElementById('actions-container').innerHTML = '<p class="text-center text-red-500 py-4">Erreur de chargement</p>';
-    }
-}
-
-function updateTime() {
-    const now = new Date();
-    const casablancaTime = new Date(now.getTime() + 3600000);
-    const nyTime = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
-    
-    document.querySelector('[x-text="casablancaTime"]').textContent = 
-        casablancaTime.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-    document.querySelector('[x-text="nyTime"]').textContent = 
-        nyTime.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-}
-
-document.addEventListener('alpine:init', () => {
-    Alpine.store('metaux', { precieux: {}, industriels: {} });
-    Alpine.store('masi', '---');
-    Alpine.store('volume', '---');
-    Alpine.store('variation', '---');
-    
-    Alpine.data('taoussiDashboard', () => ({
-        metaux: Alpine.store('metaux'),
-        masi: Alpine.store('masi'),
-        volume: Alpine.store('volume'),
-        variation: Alpine.store('variation'),
+function taoussiDashboard() {
+    return {
+        metaux: { precieux: {}, industriels: {} },
+        masi: '---',
+        volume: '---',
+        variation: '---',
         actions: [],
         casablancaTime: '',
         nyTime: '',
         
-        init() {
-            updateTime();
-            setInterval(updateTime, 60000);
-            loadData().then(() => {
-                this.metaux = Alpine.store('metaux');
-                this.masi = Alpine.store('masi');
-                this.volume = Alpine.store('volume');
-                this.variation = Alpine.store('variation');
-            });
-            setInterval(loadData, 300000);
+        async init() {
+            this.updateTime();
+            setInterval(() => this.updateTime(), 60000);
+            await this.loadData();
+            setInterval(() => this.loadData(), 300000);
+        },
+        
+        updateTime() {
+            const now = new Date();
+            const casablancaTime = new Date(now.getTime() + 3600000);
+            const nyTime = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
+            this.casablancaTime = casablancaTime.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+            this.nyTime = nyTime.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+        },
+        
+        async loadData() {
+            try {
+                const res = await fetch('https://benlouka062-pixel.github.io/bourse-casa-bot/data.json?t=' + Date.now());
+                const data = await res.json();
+                
+                this.metaux = data.metaux || { precieux: {}, industriels: {} };
+                this.masi = data.masi || '---';
+                this.volume = data.volume || '---';
+                this.variation = data.variation || '---';
+                this.actions = data.actions || [];
+                
+            } catch (e) {
+                console.error('Erreur chargement:', e);
+            }
         }
-    }));
-});
+    }
+}
 </script>
 
 </body>
