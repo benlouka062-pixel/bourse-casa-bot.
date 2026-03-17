@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>TAOUSSI TRADER · DÉTAIL</title>
     
-    <!-- Tailwind + Alpine + Chart.js -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
@@ -13,383 +12,109 @@
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:wght@100..800&display=swap');
-        
         * { font-family: 'Inter', sans-serif; }
         body { background: #0f0f0f; color: #e0e0e0; }
-        
-        .glass-card { 
-            background: rgba(22, 22, 22, 0.95); 
-            backdrop-filter: blur(10px); 
-            border: 1px solid rgba(255,255,255,0.03);
-            border-radius: 1rem;
-        }
-        
+        .glass-card { background: rgba(22,22,22,0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.03); border-radius: 1rem; }
         .trend-up { color: #00b8a9; }
         .trend-down { color: #ff6b6b; }
         .font-mono { font-family: 'JetBrains Mono', monospace; }
-        
-        .badge-reel {
-            background: rgba(0, 184, 169, 0.2);
-            color: #00b8a9;
-            border: 1px solid #00b8a9;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 10px;
-        }
-        
-        .badge-breakout {
-            background: rgba(245, 158, 11, 0.2);
-            color: #fbbf24;
-            border: 1px solid #fbbf24;
-            animation: pulse 1.5s infinite;
-        }
-        
-        .badge-divergence {
-            background: rgba(77, 195, 255, 0.2);
-            color: #4dc3ff;
-            border: 1px solid #4dc3ff;
-        }
-        
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.6; }
-            100% { opacity: 1; }
-        }
-        
-        .period-btn {
-            background: #1f2937;
-            color: #9ca3af;
-            border: 1px solid #374151;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 13px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .period-btn.active {
-            background: #00b8a9;
-            color: white;
-            border-color: #00b8a9;
-        }
-        
-        .period-btn:hover {
-            background: #374151;
-        }
-        
-        .alert-btn {
-            background: #2d3748;
-            color: #fbbf24;
-            border: 1px solid #fbbf24;
-            padding: 8px 16px;
-            border-radius: 30px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .alert-btn:hover {
-            background: #fbbf2420;
-        }
-        
-        .back-btn {
-            background: #2d3748;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 30px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .back-btn:hover {
-            background: #374151;
-        }
-        
-        .indicator-card {
-            background: #1a1a1a;
-            padding: 16px;
-            border-radius: 16px;
-            border: 1px solid #333;
-        }
+        .period-btn { background: #1f2937; color: #9ca3af; border: 1px solid #374151; padding: 4px 10px; border-radius: 20px; font-size: 12px; cursor: pointer; }
+        .period-btn.active { background: #00b8a9; color: white; border-color: #00b8a9; }
+        .alert-btn { background: #2d3748; color: #fbbf24; border: 1px solid #fbbf24; padding: 8px 16px; border-radius: 30px; font-size: 14px; cursor: pointer; }
+        .back-btn { background: #2d3748; color: white; padding: 8px 16px; border-radius: 30px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
     </style>
 </head>
 <body class="p-4 min-h-screen">
 
-<div x-data="detailApp()" x-init="init()" class="max-w-7xl mx-auto">
+<div class="max-w-7xl mx-auto">
     
-    <!-- Bouton retour -->
+    <!-- Bouton retour corrigé -->
     <div class="mb-4">
-        <button @click="goBack" class="back-btn">
-            <i class="fas fa-arrow-left"></i> Retour au tableau
-        </button>
+        <button onclick="window.location.href='index.html'" class="back-btn"><i class="fas fa-arrow-left"></i> Retour au tableau</button>
     </div>
 
-    <!-- HEADER avec infos action -->
-    <div class="glass-card p-6 mb-6" x-show="action">
-        <div class="flex flex-wrap justify-between items-center">
-            <div>
-                <h1 class="text-3xl font-bold" x-text="action?.sym"></h1>
-                <p class="text-gray-400" x-text="action?.nom"></p>
-            </div>
-            <div class="text-right">
-                <div class="text-4xl font-mono font-bold" :class="variation >= 0 ? 'trend-up' : 'trend-down'"
-                     x-text="action?.prix?.toFixed(2) + ' DH'"></div>
-                <p class="text-lg" :class="variation >= 0 ? 'trend-up' : 'trend-down'"
-                   x-text="(variation > 0 ? '+' : '') + variation.toFixed(2) + '%'"></p>
+    <div x-data="detailApp()" x-init="init()">
+        <!-- HEADER action -->
+        <div class="glass-card p-6 mb-6" x-show="action">
+            <div class="flex flex-wrap justify-between items-center">
+                <div><h1 class="text-3xl font-bold" x-text="action?.sym"></h1><p class="text-gray-400" x-text="action?.nom"></p></div>
+                <div class="text-right"><div class="text-4xl font-mono font-bold" :class="variation >= 0 ? 'trend-up' : 'trend-down'" x-text="action?.prix?.toFixed(2) + ' DH'"></div><p class="text-lg" :class="variation >= 0 ? 'trend-up' : 'trend-down'" x-text="(variation > 0 ? '+' : '') + variation.toFixed(2) + '%'"></p></div>
             </div>
         </div>
-        
-        <!-- Badges stratégies -->
-        <div class="flex flex-wrap gap-2 mt-4">
-            <span x-show="action?.breakout" class="badge-breakout px-3 py-1 rounded-full">🚀 Breakout détecté</span>
-            <span x-show="action?.divergence" class="badge-divergence px-3 py-1 rounded-full" x-text="action?.divergence?.message"></span>
-            <span x-show="action?.signal === 'ACHAT'" class="badge-reel px-3 py-1 rounded-full">🟢 Signal ACHAT</span>
-            <span x-show="action?.signal === 'VENTE'" class="badge-reel px-3 py-1 rounded-full" style="background: rgba(255,107,107,0.2); color:#ff6b6b; border-color:#ff6b6b;">🔴 Signal VENTE</span>
-        </div>
-    </div>
 
-    <!-- SÉLECTEUR DE PÉRIODE -->
-    <div class="glass-card p-4 mb-6">
-        <div class="flex flex-wrap gap-2 justify-center">
-            <button class="period-btn" :class="{ 'active': period === '1m' }" @click="setPeriod('1m')">1 min</button>
-            <button class="period-btn" :class="{ 'active': period === '5m' }" @click="setPeriod('5m')">5 min</button>
-            <button class="period-btn" :class="{ 'active': period === '15m' }" @click="setPeriod('15m')">15 min</button>
-            <button class="period-btn" :class="{ 'active': period === '1h' }" @click="setPeriod('1h')">1 heure</button>
-            <button class="period-btn" :class="{ 'active': period === '1d' }" @click="setPeriod('1d')">1 jour</button>
-            <button class="period-btn" :class="{ 'active': period === '1w' }" @click="setPeriod('1w')">1 semaine</button>
-            <button class="period-btn" :class="{ 'active': period === '1m' }" @click="setPeriod('1m')">1 mois</button>
-            <button class="period-btn" :class="{ 'active': period === '3m' }" @click="setPeriod('3m')">3 mois</button>
+        <!-- Périodes -->
+        <div class="glass-card p-4 mb-6">
+            <div class="flex flex-wrap gap-2 justify-center">
+                <button class="period-btn" :class="{ 'active': period === '1m' }" @click="setPeriod('1m')">1 min</button>
+                <button class="period-btn" :class="{ 'active': period === '5m' }" @click="setPeriod('5m')">5 min</button>
+                <button class="period-btn" :class="{ 'active': period === '15m' }" @click="setPeriod('15m')">15 min</button>
+                <button class="period-btn" :class="{ 'active': period === '1h' }" @click="setPeriod('1h')">1 heure</button>
+                <button class="period-btn" :class="{ 'active': period === '1d' }" @click="setPeriod('1d')">1 jour</button>
+                <button class="period-btn" :class="{ 'active': period === '1w' }" @click="setPeriod('1w')">1 semaine</button>
+                <button class="period-btn" :class="{ 'active': period === '1m' }" @click="setPeriod('1m')">1 mois</button>
+                <button class="period-btn" :class="{ 'active': period === '3m' }" @click="setPeriod('3m')">3 mois</button>
+            </div>
         </div>
-    </div>
 
-    <!-- GRAPHIQUE PRINCIPAL -->
-    <div class="glass-card p-6 mb-6">
-        <div class="h-96">
-            <canvas x-ref="chartCanvas"></canvas>
+        <!-- Graphique -->
+        <div class="glass-card p-6 mb-6">
+            <div class="h-96"><canvas x-ref="chartCanvas"></canvas></div>
         </div>
-    </div>
 
-    <!-- INDICATEURS CHIFFRÉS -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <div class="indicator-card">
-            <p class="text-gray-500 text-sm">RSI</p>
-            <p class="text-3xl font-mono" :class="action?.rsi > 70 ? 'trend-up' : action?.rsi < 30 ? 'trend-down' : ''"
-               x-text="action?.rsi || '--'"></p>
+        <!-- Indicateurs -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div class="bg-gray-800 p-4 rounded"><p class="text-gray-500 text-sm">RSI</p><p class="text-3xl font-mono" :class="action?.rsi > 70 ? 'trend-up' : action?.rsi < 30 ? 'trend-down' : ''" x-text="action?.rsi || '--'"></p></div>
+            <div class="bg-gray-800 p-4 rounded"><p class="text-gray-500 text-sm">MACD</p><p class="text-3xl font-mono" x-text="action?.macd?.toFixed(2) || '0.00'"></p></div>
+            <div class="bg-gray-800 p-4 rounded"><p class="text-gray-500 text-sm">Support</p><p class="text-3xl font-mono" x-text="action?.support?.toFixed(1) || '--'"></p></div>
+            <div class="bg-gray-800 p-4 rounded"><p class="text-gray-500 text-sm">Résistance</p><p class="text-3xl font-mono" x-text="action?.resistance?.toFixed(1) || '--'"></p></div>
         </div>
-        <div class="indicator-card">
-            <p class="text-gray-500 text-sm">MACD</p>
-            <p class="text-3xl font-mono" x-text="action?.macd?.toFixed(2) || '0.00'"></p>
-            <p class="text-sm text-gray-500" x-text="'Signal: ' + (action?.signal_macd?.toFixed(2) || '0.00')"></p>
-        </div>
-        <div class="indicator-card">
-            <p class="text-gray-500 text-sm">Support</p>
-            <p class="text-3xl font-mono" x-text="action?.support?.toFixed(1) || '--'"></p>
-        </div>
-        <div class="indicator-card">
-            <p class="text-gray-500 text-sm">Résistance</p>
-            <p class="text-3xl font-mono" x-text="action?.resistance?.toFixed(1) || '--'"></p>
-        </div>
-    </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        <div class="indicator-card">
-            <p class="text-gray-500 text-sm">Volume</p>
-            <p class="text-3xl font-mono" x-text="action?.volume ? (action.volume/1000).toFixed(0) + 'K' : '--'"></p>
-        </div>
-        <div class="indicator-card">
-            <p class="text-gray-500 text-sm">Bollinger</p>
-            <p class="text-sm font-mono" x-text="'Haut: ' + (action?.bb_haut?.toFixed(1) || '--')"></p>
-            <p class="text-sm font-mono" x-text="'Bas: ' + (action?.bb_bas?.toFixed(1) || '--')"></p>
-        </div>
-    </div>
-
-    <!-- CORRÉLATIONS MÉTAUX (pour MNG, SMI, CMT) -->
-    <div class="glass-card p-6 mb-6" x-show="['MNG','SMI','CMT'].includes(action?.sym)">
-        <h3 class="text-lg font-semibold mb-4 text-yellow-500">🔗 Corrélations métaux</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" x-data="{ metals: $store.metals }">
-            <template x-if="action?.sym === 'MNG'">
-                <>
-                    <div class="flex justify-between p-3 bg-gray-800/50 rounded">
-                        <span>Or</span>
-                        <span class="font-mono" x-text="metals?.precieux?.XAU?.prix?.toFixed(2) + ' USD'"></span>
-                    </div>
-                    <div class="flex justify-between p-3 bg-gray-800/50 rounded">
-                        <span>Argent</span>
-                        <span class="font-mono" x-text="metals?.precieux?.XAG?.prix?.toFixed(2) + ' USD'"></span>
-                    </div>
-                </>
-            </template>
-            <template x-if="action?.sym === 'SMI'">
-                <div class="flex justify-between p-3 bg-gray-800/50 rounded">
-                    <span>Argent</span>
-                    <span class="font-mono" x-text="metals?.precieux?.XAG?.prix?.toFixed(2) + ' USD'"></span>
-                </div>
-            </template>
-            <template x-if="action?.sym === 'CMT'">
-                <>
-                    <div class="flex justify-between p-3 bg-gray-800/50 rounded">
-                        <span>Cuivre</span>
-                        <span class="font-mono" x-text="metals?.industriels?.XCU?.prix?.toFixed(2) + ' USD'"></span>
-                    </div>
-                    <div class="flex justify-between p-3 bg-gray-800/50 rounded">
-                        <span>Argent</span>
-                        <span class="font-mono" x-text="metals?.precieux?.XAG?.prix?.toFixed(2) + ' USD'"></span>
-                    </div>
-                </>
-            </template>
-        </div>
-    </div>
-
-    <!-- BOUTON ALERTE -->
-    <div class="text-center mb-8">
-        <button @click="setAlert" class="alert-btn px-8 py-3 text-lg">
-            <i class="fas fa-bell mr-2"></i>Définir une alerte sur <span x-text="action?.sym"></span>
-        </button>
-    </div>
-
-    <!-- FOOTER -->
-    <div class="text-center text-xs text-gray-600">
-        <p>Graphiques interactifs · Tous les indicateurs · Corrélations métaux</p>
+        <!-- Bouton alerte -->
+        <div class="text-center mb-8"><button @click="setAlert" class="alert-btn px-8 py-3 text-lg"><i class="fas fa-bell mr-2"></i>Alerte sur <span x-text="action?.sym"></span></button></div>
     </div>
 </div>
 
 <script>
-document.addEventListener('alpine:init', () => {
-    Alpine.store('metals', { precieux: {}, industriels: {} });
-});
-
 function detailApp() {
     return {
-        action: null,
-        period: '1d',
-        variation: 0,
-        chart: null,
-        metals: { precieux: {}, industriels: {} },
-        
+        action: null, period: '1d', variation: 0, chart: null,
         async init() {
-            // Récupérer le symbole depuis l'URL
             const urlParams = new URLSearchParams(window.location.search);
             const symbol = urlParams.get('symbol');
-            
-            if (!symbol) {
-                window.location.href = '/dashboard/';
-                return;
-            }
-            
+            if (!symbol) { window.location.href = 'index.html'; return; }
             await this.loadData(symbol);
         },
-        
         async loadData(symbol) {
             try {
                 const res = await fetch('https://benlouka062-pixel.github.io/bourse-casa-bot/data.json?t=' + Date.now());
                 const data = await res.json();
-                
-                // Trouver l'action
                 this.action = data.actions?.find(a => a.sym === symbol);
                 if (!this.action) return;
-                
-                // Récupérer les métaux
-                if (data.metaux) {
-                    this.metals = data.metaux;
-                    Alpine.store('metals', data.metaux);
-                }
-                
-                // Variation simulée
                 this.variation = (Math.random() * 4 - 2);
-                
-                // Ajouter des données simulées si manquantes
                 if (!this.action.rsi) this.action.rsi = 45 + Math.random() * 30;
                 if (!this.action.macd) this.action.macd = (Math.random() * 2 - 1);
-                if (!this.action.signal_macd) this.action.signal_macd = (Math.random() * 2 - 1);
                 if (!this.action.support) this.action.support = this.action.prix * 0.97;
                 if (!this.action.resistance) this.action.resistance = this.action.prix * 1.03;
-                if (!this.action.volume) this.action.volume = Math.floor(Math.random() * 100000 + 50000);
-                if (!this.action.bb_haut) this.action.bb_haut = this.action.prix * 1.05;
-                if (!this.action.bb_bas) this.action.bb_bas = this.action.prix * 0.95;
-                
                 this.$nextTick(() => this.updateChart());
-                
-            } catch (e) {
-                console.error('Erreur chargement', e);
-            }
+            } catch (e) { console.error(e); }
         },
-        
-        setPeriod(period) {
-            this.period = period;
-            this.updateChart();
-        },
-        
+        setPeriod(period) { this.period = period; this.updateChart(); },
         updateChart() {
             if (!this.action || !this.$refs.chartCanvas) return;
-            
             if (this.chart) this.chart.destroy();
-            
-            const ctx = this.$refs.chartCanvas.getContext('2d');
-            
-            // Nombre de points selon période
-            const points = {
-                '1m': 60, '5m': 72, '15m': 96, '1h': 168,
-                '1d': 30, '1w': 52, '1m': 30, '3m': 90
-            }[this.period] || 30;
-            
-            // Génération des données
-            const labels = [];
-            const data = [];
+            const points = { '1m': 60, '5m': 72, '15m': 96, '1h': 168, '1d': 30, '1w': 52, '1m': 30, '3m': 90 }[this.period] || 30;
+            const labels = [], data = [];
             const basePrice = this.action.prix || 100;
-            
-            for (let i = 0; i < points; i++) {
-                labels.push(i);
-                data.push(basePrice * (0.9 + 0.2 * Math.sin(i/5) + 0.05 * (Math.random() - 0.5)));
-            }
-            
-            this.chart = new Chart(ctx, {
+            for (let i = 0; i < points; i++) { labels.push(i); data.push(basePrice * (0.9 + 0.2 * Math.sin(i/5) + 0.05 * (Math.random() - 0.5))); }
+            this.chart = new Chart(this.$refs.chartCanvas.getContext('2d'), {
                 type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: this.action.sym,
-                        data: data,
-                        borderColor: '#00b8a9',
-                        backgroundColor: 'rgba(0, 184, 169, 0.1)',
-                        borderWidth: 2,
-                        pointRadius: 0,
-                        tension: 0.4,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: { 
-                            grid: { color: '#333' }, 
-                            ticks: { color: '#888' },
-                            beginAtZero: false
-                        },
-                        x: { display: false }
-                    }
-                }
+                data: { labels, datasets: [{ label: this.action.sym, data, borderColor: '#00b8a9', backgroundColor: 'rgba(0,184,169,0.1)', borderWidth: 2, pointRadius: 0, tension: 0.4, fill: true }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: '#333' }, ticks: { color: '#888' } }, x: { display: false } } }
             });
         },
-        
-        setAlert() {
-            const seuil = prompt(`🔔 Alerte pour ${this.action.sym}\nPrix actuel: ${this.action.prix.toFixed(2)} DH\nEntrez votre seuil:`);
-            if (seuil) {
-                alert(`✅ Alerte fixée à ${seuil} DH (sera envoyée sur Telegram)`);
-            }
-        },
-        
-        goBack() {
-            window.location.href = '/dashboard/';
-        }
+        setAlert() { const seuil = prompt(`Alerte pour ${this.action.sym}\nPrix: ${this.action.prix.toFixed(2)} DH`); if (seuil) alert(`✅ Alerte fixée à ${seuil}`); }
     }
 }
 </script>
-
 </body>
 </html>
