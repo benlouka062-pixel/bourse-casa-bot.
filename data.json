@@ -1,6 +1,6 @@
 {
-  "date": "17/03/2026 18:11:22",
-  "source": "\ud83d\udcbe CACHE (march\u00e9 ferm\u00e9)",
+  "date": "17/03/2026 19:55:43",
+  "source": "\ud83d\udcbe CACHE",
   "masi": null,
   "volume": "N/A",
   "variation": "N/A",
@@ -586,12 +586,12 @@
     "precieux": {
       "XAU": {
         "nom": "Or",
-        "prix": 5006.8,
+        "prix": 5000.87,
         "variation": 0.8
       },
       "XAG": {
         "nom": "Argent",
-        "prix": 79.64,
+        "prix": 79.12,
         "variation": 1.2
       }
     },
