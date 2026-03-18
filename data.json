@@ -1,6 +1,6 @@
 {
-  "date": "18/03/2026 10:38:39",
-  "source": "\ud83d\udce1 TEMPS R\u00c9EL",
+  "date": "18/03/2026 14:51:00",
+  "source": "\ud83d\udcbe CACHE",
   "masi": null,
   "volume": "N/A",
   "variation": "N/A",
@@ -8,52 +8,52 @@
     {
       "sym": "ADH",
       "nom": "ADDOHA",
-      "prix": 29.68,
+      "prix": 29.95,
       "rsi": 50,
       "signal": "ATTENTE",
-      "support": 28.79,
-      "resistance": 30.57,
+      "support": 29.05,
+      "resistance": 30.85,
       "source": "R\u00c9EL",
       "historique": [
-        29.68,
-        29.9768,
-        30.273600000000002,
-        30.5704,
-        30.8672
+        29.95,
+        30.2495,
+        30.549,
+        30.8485,
+        31.148
       ]
     },
     {
       "sym": "DHO",
       "nom": "DELTA HOLDING",
-      "prix": 56.0,
+      "prix": 58.5,
       "rsi": 50,
       "signal": "ATTENTE",
-      "support": 54.32,
-      "resistance": 57.68,
+      "support": 56.74,
+      "resistance": 60.26,
       "source": "R\u00c9EL",
       "historique": [
-        56.0,
-        56.56,
-        57.120000000000005,
-        57.68,
-        58.24
+        58.5,
+        59.085,
+        59.67,
+        60.255,
+        60.84
       ]
     },
     {
       "sym": "ENL",
       "nom": "ENNAKL",
-      "prix": 49.0,
+      "prix": 48.5,
       "rsi": 50,
       "signal": "ATTENTE",
-      "support": 47.53,
-      "resistance": 50.47,
+      "support": 47.05,
+      "resistance": 49.95,
       "source": "R\u00c9EL",
       "historique": [
-        49.0,
-        49.49,
-        49.980000000000004,
-        50.47,
-        50.96
+        48.5,
+        48.985,
+        49.47,
+        49.955,
+        50.440000000000005
       ]
     },
     {
@@ -64,7 +64,7 @@
       "signal": "ATTENTE",
       "support": 29.59,
       "resistance": 31.41,
-      "source": "R\u00c9EL",
+      "source": "\ud83d\udcbe CACHE",
       "historique": [
         30.5,
         30.805,
@@ -81,7 +81,7 @@
       "signal": "ATTENTE",
       "support": 80.63,
       "resistance": 85.61,
-      "source": "R\u00c9EL",
+      "source": "\ud83d\udcbe CACHE",
       "historique": [
         83.12,
         83.9512,
@@ -95,12 +95,12 @@
     "precieux": {
       "XAU": {
         "nom": "Or",
-        "prix": 4972.23,
+        "prix": 4863.62,
         "variation": 0.8
       },
       "XAG": {
         "nom": "Argent",
-        "prix": 79.69,
+        "prix": 76.46,
         "variation": 1.2
       }
     },
