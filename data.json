@@ -1,5 +1,5 @@
 {
-  "date": "17/03/2026 23:50:36",
+  "date": "18/03/2026 10:38:39",
   "source": "\ud83d\udce1 TEMPS R\u00c9EL",
   "masi": null,
   "volume": "N/A",
@@ -8,86 +8,86 @@
     {
       "sym": "ADH",
       "nom": "ADDOHA",
-      "prix": 29.38,
+      "prix": 29.68,
       "rsi": 50,
       "signal": "ATTENTE",
-      "support": 28.5,
-      "resistance": 30.26,
+      "support": 28.79,
+      "resistance": 30.57,
       "source": "R\u00c9EL",
       "historique": [
-        29.38,
-        29.6738,
-        29.9676,
-        30.2614,
-        30.5552
+        29.68,
+        29.9768,
+        30.273600000000002,
+        30.5704,
+        30.8672
       ]
     },
     {
       "sym": "DHO",
       "nom": "DELTA HOLDING",
-      "prix": 55.0,
+      "prix": 56.0,
       "rsi": 50,
       "signal": "ATTENTE",
-      "support": 53.35,
-      "resistance": 56.65,
+      "support": 54.32,
+      "resistance": 57.68,
       "source": "R\u00c9EL",
       "historique": [
-        55.0,
-        55.55,
-        56.1,
-        56.65,
-        57.2
+        56.0,
+        56.56,
+        57.120000000000005,
+        57.68,
+        58.24
       ]
     },
     {
       "sym": "ENL",
       "nom": "ENNAKL",
-      "prix": 48.7,
+      "prix": 49.0,
       "rsi": 50,
       "signal": "ATTENTE",
-      "support": 47.24,
-      "resistance": 50.16,
+      "support": 47.53,
+      "resistance": 50.47,
       "source": "R\u00c9EL",
       "historique": [
-        48.7,
-        49.187000000000005,
-        49.67400000000001,
-        50.161,
-        50.648
+        49.0,
+        49.49,
+        49.980000000000004,
+        50.47,
+        50.96
       ]
     },
     {
       "sym": "CRS",
       "nom": "CARTIER SAADA",
-      "prix": 29.0,
+      "prix": 30.5,
       "rsi": 50,
       "signal": "ATTENTE",
-      "support": 28.13,
-      "resistance": 29.87,
+      "support": 29.59,
+      "resistance": 31.41,
       "source": "R\u00c9EL",
       "historique": [
-        29.0,
-        29.29,
-        29.580000000000002,
-        29.87,
-        30.16
+        30.5,
+        30.805,
+        31.11,
+        31.415,
+        31.720000000000002
       ]
     },
     {
       "sym": "COL",
       "nom": "COLORADO",
-      "prix": 86.0,
+      "prix": 83.12,
       "rsi": 50,
       "signal": "ATTENTE",
-      "support": 83.42,
-      "resistance": 88.58,
+      "support": 80.63,
+      "resistance": 85.61,
       "source": "R\u00c9EL",
       "historique": [
-        86.0,
-        86.86,
-        87.72,
-        88.58,
-        89.44
+        83.12,
+        83.9512,
+        84.78240000000001,
+        85.6136,
+        86.4448
       ]
     }
   ],
@@ -95,12 +95,12 @@
     "precieux": {
       "XAU": {
         "nom": "Or",
-        "prix": 5001.98,
+        "prix": 4972.23,
         "variation": 0.8
       },
       "XAG": {
         "nom": "Argent",
-        "prix": 79.16,
+        "prix": 79.69,
         "variation": 1.2
       }
     },
