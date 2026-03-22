@@ -1,109 +1,335 @@
 {
-  "date": "22/03/2026 21:57:20",
-  "source": "\ud83d\udcbe CACHE",
-  "masi": null,
-  "volume": "N/A",
-  "variation": "N/A",
+  "date": "2026-03-22 23:39:43",
   "actions": [
     {
       "sym": "ADH",
       "nom": "ADDOHA",
-      "prix": 29.95,
-      "rsi": 50,
-      "signal": "ATTENTE",
-      "support": 29.05,
-      "resistance": 30.85,
-      "source": "\ud83d\udcbe CACHE",
-      "historique": [
-        29.95,
-        30.2495,
-        30.549,
-        30.8485,
-        31.148
-      ]
+      "prix": 30.5,
+      "rsi": 23.82,
+      "adx": 53.34,
+      "macd": {
+        "macd": -0.924,
+        "signal": -1.138,
+        "histogram": 0.213,
+        "crossover": null
+      },
+      "supertrend": 0,
+      "source": "REEL"
     },
     {
-      "sym": "DHO",
-      "nom": "DELTA HOLDING",
-      "prix": 58.5,
-      "rsi": 50,
-      "signal": "ATTENTE",
-      "support": 56.74,
-      "resistance": 60.26,
-      "source": "\ud83d\udcbe CACHE",
-      "historique": [
-        58.5,
-        59.085,
-        59.67,
-        60.255,
-        60.84
-      ]
+      "sym": "AGZ",
+      "nom": "AFRIQUIA GAZ",
+      "prix": 4165.0,
+      "rsi": 35.11,
+      "adx": 0.37,
+      "macd": {
+        "macd": 19.822,
+        "signal": 13.59,
+        "histogram": 6.231,
+        "crossover": null
+      },
+      "supertrend": 0,
+      "source": "REEL"
     },
     {
-      "sym": "ENL",
-      "nom": "ENNAKL",
-      "prix": 48.5,
-      "rsi": 50,
-      "signal": "ATTENTE",
-      "support": 47.05,
-      "resistance": 49.95,
-      "source": "\ud83d\udcbe CACHE",
-      "historique": [
-        48.5,
-        48.985,
-        49.47,
-        49.955,
-        50.440000000000005
-      ]
+      "sym": "XAG",
+      "nom": "Argent",
+      "prix": 82.34,
+      "rsi": 60.11,
+      "adx": 14.38,
+      "macd": {
+        "macd": -1.475,
+        "signal": -0.596,
+        "histogram": -0.879,
+        "crossover": null
+      },
+      "supertrend": 0,
+      "source": "REEL"
+    },
+    {
+      "sym": "ATW",
+      "nom": "Attijariwafa bank",
+      "prix": 760.0,
+      "rsi": 19.36,
+      "adx": 32.35,
+      "macd": {
+        "macd": 5.518,
+        "signal": 2.181,
+        "histogram": 3.336,
+        "crossover": null
+      },
+      "supertrend": 0,
+      "source": "REEL"
+    },
+    {
+      "sym": "AH",
+      "nom": "Auto Hall",
+      "prix": 94.99,
+      "rsi": 53.25,
+      "adx": 25.3,
+      "macd": {
+        "macd": -0.229,
+        "signal": -0.56,
+        "histogram": 0.331,
+        "crossover": null
+      },
+      "supertrend": 0,
+      "source": "REEL"
     },
     {
       "sym": "CRS",
       "nom": "CARTIER SAADA",
-      "prix": 30.5,
-      "rsi": 50,
-      "signal": "ATTENTE",
-      "support": 29.59,
-      "resistance": 31.41,
-      "source": "\ud83d\udcbe CACHE",
-      "historique": [
-        30.5,
-        30.805,
-        31.11,
-        31.415,
-        31.720000000000002
-      ]
+      "prix": 29.04,
+      "rsi": 54.78,
+      "adx": 12.93,
+      "macd": {
+        "macd": -0.65,
+        "signal": -0.628,
+        "histogram": -0.022,
+        "crossover": null
+      },
+      "supertrend": 0,
+      "source": "REEL"
     },
     {
       "sym": "COL",
       "nom": "COLORADO",
-      "prix": 83.12,
-      "rsi": 50,
-      "signal": "ATTENTE",
-      "support": 80.63,
-      "resistance": 85.61,
-      "source": "\ud83d\udcbe CACHE",
-      "historique": [
-        83.12,
-        83.9512,
-        84.78240000000001,
-        85.6136,
-        86.4448
-      ]
-    }
-  ],
-  "metaux": {
-    "precieux": {
-      "XAU": {
-        "nom": "Or",
-        "prix": 2350.5,
-        "variation": 0.8
+      "prix": 92.5,
+      "rsi": 48.32,
+      "adx": 16.0,
+      "macd": {
+        "macd": 1.941,
+        "signal": 1.137,
+        "histogram": 0.803,
+        "crossover": null
       },
-      "XAG": {
-        "nom": "Argent",
-        "prix": 28.75,
-        "variation": 1.2
-      }
+      "supertrend": 0,
+      "source": "REEL"
     },
-    "industriels": {}
-  }
+    {
+      "sym": "COPPER",
+      "nom": "Cuivre",
+      "prix": 5.9,
+      "rsi": 58.89,
+      "adx": 29.01,
+      "macd": {
+        "macd": -0.003,
+        "signal": 0.009,
+        "histogram": -0.012,
+        "crossover": null
+      },
+      "supertrend": 0,
+      "source": "REEL"
+    },
+    {
+      "sym": "DHO",
+      "nom": "DELTA HOLDING",
+      "prix": 68.56,
+      "rsi": 46.71,
+      "adx": 6.01,
+      "macd": {
+        "macd": -1.014,
+        "signal": -1.123,
+        "histogram": 0.109,
+        "crossover": null
+      },
+      "supertrend": 0,
+      "source": "REEL"
+    },
+    {
+      "sym": "ENL",
+      "nom": "ENNAKL",
+      "prix": 51.0,
+      "rsi": 55.83,
+      "adx": 59.79,
+      "macd": {
+        "macd": -0.429,
+        "signal": -0.56,
+        "histogram": 0.132,
+        "crossover": null
+      },
+      "supertrend": 0,
+      "source": "REEL"
+    },
+    {
+      "sym": "MNG",
+      "nom": "MANAGEM",
+      "prix": 7980.0,
+      "rsi": 50.85,
+      "adx": 34.59,
+      "macd": {
+        "macd": 135.051,
+        "signal": 179.345,
+        "histogram": -44.295,
+        "crossover": null
+      },
+      "supertrend": 0,
+      "source": "REEL"
+    },
+    {
+      "sym": "SOT",
+      "nom": "SOTHEMA",
+      "prix": 1792.0,
+      "rsi": 54.81,
+      "adx": 28.14,
+      "macd": {
+        "macd": -6.797,
+        "signal": -9.334,
+        "histogram": 2.537,
+        "crossover": null
+      },
+      "supertrend": 0,
+      "source": "REEL"
+    },
+    {
+      "sym": "MASI",
+      "nom": "MASI",
+      "prix": 1445.24,
+      "rsi": 28.19,
+      "adx": 20.87,
+      "macd": {
+        "macd": -8.378,
+        "signal": -13.29,
+        "histogram": 4.913,
+        "crossover": null
+      },
+      "supertrend": 0,
+      "source": "REEL"
+    },
+    {
+      "sym": "CMT",
+      "nom": "TOUISSIT",
+      "prix": 3350.0,
+      "rsi": 35.85,
+      "adx": 71.97,
+      "macd": {
+        "macd": 333.798,
+        "signal": 256.62,
+        "histogram": 77.179,
+        "crossover": null
+      },
+      "supertrend": 0,
+      "source": "REEL"
+    },
+    {
+      "sym": "MAS",
+      "nom": "Moroccan All Shares",
+      "prix": 18701.04,
+      "rsi": 25.79,
+      "adx": 28.5,
+      "macd": {
+        "macd": -34.488,
+        "signal": -79.45,
+        "histogram": 44.961,
+        "crossover": null
+      },
+      "supertrend": 0,
+      "source": "REEL"
+    },
+    {
+      "sym": "XAU",
+      "nom": "Or",
+      "prix": 5080.9,
+      "rsi": 68.12,
+      "adx": 28.64,
+      "macd": {
+        "macd": 77.822,
+        "signal": 95.591,
+        "histogram": -17.769,
+        "crossover": null
+      },
+      "supertrend": 0,
+      "source": "REEL"
+    },
+    {
+      "sym": "LEAD",
+      "nom": "Plomb",
+      "prix": 1969.23,
+      "rsi": 70.18,
+      "adx": 58.31,
+      "macd": {
+        "macd": -15.131,
+        "signal": -14.188,
+        "histogram": -0.943,
+        "crossover": null
+      },
+      "supertrend": 0,
+      "source": "REEL"
+    },
+    {
+      "sym": "RIS",
+      "nom": "RISMA",
+      "prix": 345.0,
+      "rsi": 48.86,
+      "adx": 40.99,
+      "macd": {
+        "macd": -12.687,
+        "signal": -10.094,
+        "histogram": -2.593,
+        "crossover": null
+      },
+      "supertrend": 0,
+      "source": "REEL"
+    },
+    {
+      "sym": "SMI",
+      "nom": "SMI",
+      "prix": 5824.0,
+      "rsi": 19.97,
+      "adx": 60.27,
+      "macd": {
+        "macd": 98.816,
+        "signal": 201.21,
+        "histogram": -102.395,
+        "crossover": null
+      },
+      "supertrend": 0,
+      "source": "REEL"
+    },
+    {
+      "sym": "SNA",
+      "nom": "STOKVIS NORD",
+      "prix": 89.02,
+      "rsi": 74.78,
+      "adx": 57.29,
+      "macd": {
+        "macd": -2.034,
+        "signal": -2.414,
+        "histogram": 0.38,
+        "crossover": null
+      },
+      "supertrend": 0,
+      "source": "REEL"
+    },
+    {
+      "sym": "TQM",
+      "nom": "TAQA MOROCCO",
+      "prix": 1890.0,
+      "rsi": 52.97,
+      "adx": 4.06,
+      "macd": {
+        "macd": -52.405,
+        "signal": -50.441,
+        "histogram": -1.963,
+        "crossover": "bearish"
+      },
+      "supertrend": 0,
+      "source": "REEL"
+    },
+    {
+      "sym": "ZINC",
+      "nom": "Zinc",
+      "prix": 3377.95,
+      "rsi": 52.04,
+      "adx": 18.58,
+      "macd": {
+        "macd": 30.856,
+        "signal": 39.009,
+        "histogram": -8.153,
+        "crossover": null
+      },
+      "supertrend": 0,
+      "source": "REEL"
+    }
+  ]
 }
