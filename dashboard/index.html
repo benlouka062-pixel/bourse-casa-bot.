@@ -2,231 +2,184 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>TAOUSSI CAPITAL · DASHBOARD</title>
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taoussi Capital - Dashboard Trading Avancé</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:wght@100..800&display=swap');
-        * { font-family: 'Inter', sans-serif; }
-        body { background: #0f0f0f; color: #e5e7eb; }
-        .glass-card { background: rgba(22,22,22,0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.03); border-radius: 1rem; }
-        .trend-up { color: #26a69a; }
-        .trend-down { color: #ef5350; }
-        .font-mono { font-family: 'JetBrains Mono', monospace; }
-        .badge-metal { background: rgba(0,184,169,0.1); color: #26a69a; padding: 0.25rem 0.75rem; border-radius: 2rem; font-size: 0.75rem; border: 1px solid rgba(0,184,169,0.2); }
-        .metal-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
-        .metal-item { background: rgba(0,0,0,0.25); padding: 0.75rem; border-radius: 0.75rem; border: 1px solid rgba(255,255,255,0.03); }
-        .action-card { background: rgba(26,32,39,0.9); border-radius: 1rem; padding: 1rem; margin-bottom: 0.75rem; border: 1px solid rgba(255,255,255,0.03); cursor: pointer; transition: all 0.2s; }
-        .action-card:hover { background: rgba(32,38,45,0.95); border-color: #26a69a; transform: translateY(-2px); }
-        .time-display { font-size: 2rem; font-weight: 600; background: linear-gradient(135deg, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .time-label { font-size: 0.8rem; color: #64748b; text-transform: uppercase; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0f1e 0%, #0c1222 100%);
+            color: #e0e0e0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        .header { margin-bottom: 25px; }
+        h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(90deg, #ffd700, #ff8c00);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-block;
+        }
+        .date { color: #888; margin-top: 8px; font-size: 0.85rem; }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .card {
+            background: rgba(20, 25, 40, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            overflow: hidden;
+        }
+        .card-header {
+            padding: 15px 20px;
+            background: rgba(0,0,0,0.3);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .card-header h3 { font-size: 1.2rem; font-weight: 600; }
+        .price { font-size: 1.5rem; font-weight: bold; color: #ffd966; }
+        .signal {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        .signal-achat { background: #2e7d32; color: white; }
+        .signal-vente { background: #c62828; color: white; }
+        .signal-attente { background: #ff9800; color: #1e1e1e; }
+        .signal-fort { background: #1b5e20; color: white; box-shadow: 0 0 8px #2e7d32; }
+        .card-body { padding: 15px 20px; }
+        .indicator-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .indicator-label { color: #aaa; font-size: 0.85rem; }
+        .indicator-value { font-weight: 600; font-size: 0.9rem; }
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            background: rgba(255,255,255,0.1);
+            margin: 2px;
+        }
+        .correlation-positive { color: #4caf50; }
+        .correlation-negative { color: #f44336; }
+        .metaux-section {
+            background: rgba(0,0,0,0.3);
+            border-radius: 20px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .metaux-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .metal-card {
+            background: rgba(30,35,50,0.8);
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+        }
+        .metal-price { font-size: 1.2rem; font-weight: bold; color: #ffd966; }
+        footer { text-align: center; color: #555; margin-top: 30px; font-size: 0.75rem; }
+        @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } body { padding: 10px; } }
     </style>
 </head>
-<body class="p-4 min-h-screen">
-
-<div x-data="taoussiDashboard()" x-init="init()" class="max-w-7xl mx-auto">
-    
-    <!-- HEADER -->
-    <div class="glass-card p-6 mb-6 flex flex-wrap items-center justify-between">
-        <div class="flex items-center space-x-4">
-            <div class="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center">
-                <i class="fas fa-chart-line text-white text-xl"></i>
-            </div>
-            <div>
-                <h1 class="text-3xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
-                    TAOUSSI CAPITAL
-                </h1>
-                <p class="text-sm text-gray-500 mt-1">Bourse de Casablanca · Données réelles</p>
-            </div>
-        </div>
-        
-        <div class="flex items-center space-x-8">
-            <div class="text-right">
-                <div class="time-label">CASABLANCA</div>
-                <div class="time-display" x-text="casablancaTime"></div>
-            </div>
-            <div class="text-right">
-                <div class="time-label">NEW YORK</div>
-                <div class="time-display text-2xl" x-text="nyTime"></div>
-            </div>
-        </div>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>⚡ TAOUSSI CAPITAL</h1>
+        <div class="date" id="date-display"></div>
+        <div class="subtitle" style="color:#888; font-size:0.85rem;">Bourse de Casablanca · Données réelles · Swing Trading</div>
     </div>
-
-    <!-- STATS MASI -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div class="glass-card p-5">
-            <p class="text-sm text-gray-500 mb-1">MASI</p>
-            <p class="text-3xl font-bold font-mono" x-text="masi ? masi.toLocaleString() : '---'"></p>
-        </div>
-        <div class="glass-card p-5">
-            <p class="text-sm text-gray-500 mb-1">VOLUME</p>
-            <p class="text-3xl font-bold font-mono" x-text="volume || '---'"></p>
-        </div>
-        <div class="glass-card p-5">
-            <p class="text-sm text-gray-500 mb-1">VARIATION</p>
-            <p class="text-3xl font-bold font-mono" :class="variation >= 0 ? 'trend-up' : 'trend-down'" x-text="variation || '---'"></p>
-        </div>
+    <div id="actions-container" class="grid"></div>
+    <div class="metaux-section">
+        <h3>🏅 MÉTAUX (Prix en USD)</h3>
+        <div id="metaux-container" class="metaux-grid"></div>
     </div>
-
-    <!-- MÉTAUX PRÉCIEUX + INDUSTRIELS -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
-        <!-- Métaux précieux -->
-        <div class="glass-card p-5">
-            <div class="flex items-center justify-between mb-4">
-                <div class="flex items-center space-x-2">
-                    <i class="fas fa-crown text-yellow-500"></i>
-                    <h3 class="font-semibold text-gray-300">MÉTAUX PRÉCIEUX</h3>
-                </div>
-                <span class="badge-metal">LIVE</span>
-            </div>
-            <div class="metal-grid">
-                <!-- Or -->
-                <div class="metal-item">
-                    <div class="flex justify-between">
-                        <span class="font-medium">Or</span>
-                        <span class="text-xs text-gray-500">XAU</span>
-                    </div>
-                    <div class="text-lg font-mono font-bold mt-1" x-text="(metaux?.precieux?.XAU?.prix || 0).toFixed(2) + ' USD'"></div>
-                    <div class="text-xs" :class="(metaux?.precieux?.XAU?.variation || 0) >= 0 ? 'trend-up' : 'trend-down'" 
-                         x-text="((metaux?.precieux?.XAU?.variation || 0) > 0 ? '+' : '') + (metaux?.precieux?.XAU?.variation || 0).toFixed(1) + '%'"></div>
-                </div>
-                <!-- Argent -->
-                <div class="metal-item">
-                    <div class="flex justify-between">
-                        <span class="font-medium">Argent</span>
-                        <span class="text-xs text-gray-500">XAG</span>
-                    </div>
-                    <div class="text-lg font-mono font-bold mt-1" x-text="(metaux?.precieux?.XAG?.prix || 0).toFixed(2) + ' USD'"></div>
-                    <div class="text-xs" :class="(metaux?.precieux?.XAG?.variation || 0) >= 0 ? 'trend-up' : 'trend-down'"
-                         x-text="((metaux?.precieux?.XAG?.variation || 0) > 0 ? '+' : '') + (metaux?.precieux?.XAG?.variation || 0).toFixed(1) + '%'"></div>
-                </div>
-                <div class="metal-item opacity-0"></div> <!-- placeholder pour garder la grille -->
-            </div>
-        </div>
-
-        <!-- Métaux industriels -->
-        <div class="glass-card p-5">
-            <div class="flex items-center justify-between mb-4">
-                <div class="flex items-center space-x-2">
-                    <i class="fas fa-industry text-blue-500"></i>
-                    <h3 class="font-semibold text-gray-300">MÉTAUX INDUSTRIELS</h3>
-                </div>
-                <span class="badge-metal">LIVE</span>
-            </div>
-            <div class="metal-grid">
-                <!-- Cuivre -->
-                <div class="metal-item">
-                    <div class="flex justify-between">
-                        <span class="font-medium">Cuivre</span>
-                        <span class="text-xs text-gray-500">CU</span>
-                    </div>
-                    <div class="text-lg font-mono font-bold mt-1" x-text="(metaux?.industriels?.XCU?.prix || 0).toFixed(2) + ' USD'"></div>
-                    <div class="text-xs" :class="(metaux?.industriels?.XCU?.variation || 0) >= 0 ? 'trend-up' : 'trend-down'"
-                         x-text="((metaux?.industriels?.XCU?.variation || 0) > 0 ? '+' : '') + (metaux?.industriels?.XCU?.variation || 0).toFixed(1) + '%'"></div>
-                </div>
-                <!-- Zinc -->
-                <div class="metal-item">
-                    <div class="flex justify-between">
-                        <span class="font-medium">Zinc</span>
-                        <span class="text-xs text-gray-500">ZN</span>
-                    </div>
-                    <div class="text-lg font-mono font-bold mt-1" x-text="(metaux?.industriels?.XZN?.prix || 0).toFixed(2) + ' USD'"></div>
-                    <div class="text-xs" :class="(metaux?.industriels?.XZN?.variation || 0) >= 0 ? 'trend-up' : 'trend-down'"
-                         x-text="((metaux?.industriels?.XZN?.variation || 0) > 0 ? '+' : '') + (metaux?.industriels?.XZN?.variation || 0).toFixed(1) + '%'"></div>
-                </div>
-                <!-- Plomb -->
-                <div class="metal-item">
-                    <div class="flex justify-between">
-                        <span class="font-medium">Plomb</span>
-                        <span class="text-xs text-gray-500">PB</span>
-                    </div>
-                    <div class="text-lg font-mono font-bold mt-1" x-text="(metaux?.industriels?.XPB?.prix || 0).toFixed(2) + ' USD'"></div>
-                    <div class="text-xs" :class="(metaux?.industriels?.XPB?.variation || 0) >= 0 ? 'trend-up' : 'trend-down'"
-                         x-text="((metaux?.industriels?.XPB?.variation || 0) > 0 ? '+' : '') + (metaux?.industriels?.XPB?.variation || 0).toFixed(1) + '%'"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ACTIONS -->
-    <div class="glass-card p-5 mb-6">
-        <div class="flex items-center justify-between mb-4">
-            <div class="flex items-center space-x-2">
-                <i class="fas fa-chart-simple text-emerald-500"></i>
-                <h2 class="font-semibold text-gray-300">ACTIONS SUIVIES</h2>
-            </div>
-            <span class="text-sm text-gray-500" x-text="actions.length + ' valeurs'"></span>
-        </div>
-        
-        <div id="actions-container" class="space-y-2 max-h-96 overflow-y-auto pr-2">
-            <template x-for="action in actions" :key="action.sym">
-                <div class="action-card" @click="window.location.href='detail.html?symbol=' + action.sym">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <span class="font-bold text-emerald-500 text-lg" x-text="action.sym"></span>
-                            <span class="text-sm text-gray-500 ml-2" x-text="action.nom || ''"></span>
-                        </div>
-                        <span class="font-mono text-lg font-bold" x-text="action.prix?.toFixed(2) + ' DH'"></span>
-                    </div>
-                    <div class="flex justify-between items-center mt-3">
-                        <span class="text-sm">RSI: <span :class="action.rsi > 70 ? 'trend-up' : action.rsi < 30 ? 'trend-down' : ''" x-text="action.rsi || '--'"></span></span>
-                        <span class="text-sm">Signal: <span :class="action.signal === 'ACHAT' ? 'text-green-500' : action.signal === 'VENTE' ? 'text-red-500' : ''" x-text="action.signal || 'ATTENTE'"></span></span>
-                    </div>
-                </div>
-            </template>
-            <p x-show="actions.length === 0" class="text-center text-gray-500 py-4">Aucune action disponible</p>
-        </div>
-    </div>
+    <footer>Données calculées à partir de l'historique réel | Agents IA avec RSI, ADX, MACD, Supertrend, Corrélations</footer>
 </div>
-
 <script>
-function taoussiDashboard() {
-    return {
-        metaux: { precieux: {}, industriels: {} },
-        masi: '---',
-        volume: '---',
-        variation: '---',
-        actions: [],
-        casablancaTime: '',
-        nyTime: '',
-        
-        async init() {
-            this.updateTime();
-            setInterval(() => this.updateTime(), 60000);
-            await this.loadData();
-            setInterval(() => this.loadData(), 300000);
-        },
-        
-        updateTime() {
-            const now = new Date();
-            const casablancaTime = new Date(now.getTime() + 3600000);
-            const nyTime = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
-            this.casablancaTime = casablancaTime.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-            this.nyTime = nyTime.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-        },
-        
-        async loadData() {
-            try {
-                const res = await fetch('https://benlouka062-pixel.github.io/bourse-casa-bot/data.json?t=' + Date.now());
-                const data = await res.json();
-                
-                this.metaux = data.metaux || { precieux: {}, industriels: {} };
-                this.masi = data.masi || '---';
-                this.volume = data.volume || '---';
-                this.variation = data.variation || '---';
-                this.actions = data.actions || [];
-                
-            } catch (e) {
-                console.error('Erreur chargement:', e);
-            }
+    async function loadData() {
+        try {
+            const response = await fetch('https://benlouka062-pixel.github.io/bourse-casa-bot/data.json');
+            const data = await response.json();
+            document.getElementById('date-display').innerHTML = `📅 ${data.date} | ${data.source}`;
+            const actions = data.actions || [];
+            const actionsContainer = document.getElementById('actions-container');
+            const metauxContainer = document.getElementById('metaux-container');
+            actionsContainer.innerHTML = '';
+            metauxContainer.innerHTML = '';
+            const metalsList = [];
+            actions.forEach(action => {
+                const sym = action.sym;
+                const isMetal = ['XAU', 'XAG', 'COPPER', 'ZINC', 'LEAD'].includes(sym);
+                if (isMetal) { metalsList.push(action); return; }
+                let signalClass = 'signal-attente';
+                if (action.signal.includes('ACHAT')) signalClass = action.signal.includes('FORT') ? 'signal-fort' : 'signal-achat';
+                if (action.signal.includes('VENTE')) signalClass = 'signal-vente';
+                const macd = action.macd || {};
+                const supertrend = action.supertrend === 1 ? 'HAUSSIER' : (action.supertrend === -1 ? 'BAISSIER' : 'NEUTRE');
+                const supertrendClass = action.supertrend === 1 ? 'style="color:#4caf50"' : (action.supertrend === -1 ? 'style="color:#f44336"' : '');
+                let correlationsHtml = '';
+                if (action.correlations && action.correlations.length > 0) {
+                    correlationsHtml = '<div class="indicator-row"><span class="indicator-label">🔗 Corrélations</span><span>';
+                    action.correlations.forEach(c => {
+                        const signClass = c.correlation > 0 ? 'correlation-positive' : 'correlation-negative';
+                        correlationsHtml += `<span class="badge ${signClass}">${c.metal}: ${c.correlation > 0 ? '+' : ''}${c.correlation}</span>`;
+                    });
+                    correlationsHtml += '</span></div>';
+                }
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <div class="card-header">
+                        <h3>${action.nom} <span style="font-size:0.7rem; color:#888;">(${sym})</span></h3>
+                        <div><span class="price">${action.prix.toLocaleString()} DH</span></div>
+                    </div>
+                    <div class="card-body">
+                        <div class="indicator-row"><span class="indicator-label">🎯 Signal</span><span class="signal ${signalClass}">${action.signal}</span></div>
+                        <div class="indicator-row"><span class="indicator-label">📊 RSI (14)</span><span class="indicator-value">${action.rsi}</span></div>
+                        <div class="indicator-row"><span class="indicator-label">📈 ADX (tendance)</span><span class="indicator-value">${action.adx || 'N/A'}</span></div>
+                        <div class="indicator-row"><span class="indicator-label">📉 Supertrend</span><span class="indicator-value" ${supertrendClass}>${supertrend}</span></div>
+                        <div class="indicator-row"><span class="indicator-label">📊 MACD</span><span class="indicator-value">${macd.macd || 'N/A'} | Signal: ${macd.signal || 'N/A'}</span></div>
+                        <div class="indicator-row"><span class="indicator-label">🛡️ Support</span><span class="indicator-value">${action.support}</span></div>
+                        <div class="indicator-row"><span class="indicator-label">🚀 Résistance</span><span class="indicator-value">${action.resistance}</span></div>
+                        ${action.breakout ? '<div class="indicator-row"><span class="indicator-label">💥 Breakout</span><span class="indicator-value" style="color:#4caf50;">OUI</span></div>' : ''}
+                        ${action.divergence ? `<div class="indicator-row"><span class="indicator-label">🔄 Divergence</span><span class="indicator-value">${action.divergence}</span></div>` : ''}
+                        ${correlationsHtml}
+                    </div>
+                `;
+                actionsContainer.appendChild(card);
+            });
+            metalsList.forEach(metal => {
+                const metalCard = document.createElement('div');
+                metalCard.className = 'metal-card';
+                metalCard.innerHTML = `<div><strong>${metal.nom}</strong></div><div class="metal-price">$${metal.prix.toLocaleString()}</div><div style="font-size:0.7rem; color:#888;">${metal.breakout ? '💥 Breakout' : ''}</div>`;
+                metauxContainer.appendChild(metalCard);
+            });
+        } catch (error) {
+            console.error('Erreur chargement data.json:', error);
+            document.getElementById('actions-container').innerHTML = '<div style="text-align:center; padding:40px;">❌ Erreur de chargement des données. Vérifiez le fichier data.json sur GitHub.</div>';
         }
     }
-}
+    loadData();
+    setInterval(loadData, 60000);
 </script>
-
 </body>
 </html>
